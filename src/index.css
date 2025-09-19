@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+
+@font-face {
+    font-family: "inter";
+    src: url(assets/Inter-VariableFont_opsz,wght.ttf);
+}
+@font-face {
+    font-family: "OpenSans";
+    src: url(assets/OpenSans-VariableFont_wdth,wght.ttf);
+}
+@font-face {
+    font-family: "Poppins";
+    src: url(assets/Poppins-Regular.ttf);
+}
+@font-face {
+    font-family: "Roboto";
+    src: url(assets/Roboto-VariableFont_wdth,wght.ttf);
+}
+
+@theme {
+    --font-inter: "inter";
+    --font-OpenSans: "OpenSans";
+    --font-Poppins: "Poppins";
+    --font-Roboto: "Roboto";
+}
+
+@keyframes rotate-clock-wise {
+    0%{
+        rotate: 0deg;
+    }
+    100%{
+        rotate: 360deg;
+    }
+}
+
+body::-webkit-scrollbar{
+    width: 6px;
+    background-color:#000000;
+}
+
+body::-webkit-scrollbar-thumb{
+    background-color: #ffffff;
+}
+body{
+    background: #000000;
+}
+#scroller::-webkit-scrollbar{
+    width: 6px;
+    background-color:#000000;
+}
+
+#scroller::-webkit-scrollbar-thumb{
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+}
+#view_1{
+     background-image: 
+    linear-gradient(to top,rgb(0, 0, 0), rgba(8, 10, 10, 0.5),rgba(64, 78, 77, 0.2), rgba(201, 249, 245, 0),rgba(201, 249, 245, 0),rgba(201, 249, 245, 0)),
+    url("/image/Landing.webp");
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.sw-loader__wrapper {
+    position: relative;
+  }
+  
+  .sw-loader__wrapper--center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .sw-loader__wrapper .sw-loader__holder {
+    width: 70%;
+    height: 70%;
+    margin-left: 15%;
+    margin-top: 15%;
+    position: relative;
+    transform: rotate(-45deg);
+  }
+  
+  .sw-loader__wrapper .sw-loader__holder .rect {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(
+      to right,
+      #141562,
+      #486fbc,
+      #eab5a1,
+      #8dd6ff,
+      #4973c9,
+      #d07ca7,
+      #f4915e,
+      #f5919e,
+      #b46f89,
+      #141562,
+      #486fbc
+    );
+    background-position: 0% 50%;
+    background-size: 1000% 1000%;
+    overflow: hidden;
+    animation: moveGradient 15s infinite;
+  }
+  
+  @keyframes moveGradient {
+    to {
+      background-position: 100% 50%;
+    }
+  }
+  
