@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/socket.io": {
-        target: "http://localhost:4000",
+        target: "https://blood-front.vercel.app/",
         ws: true, 
         changeOrigin: true,
       },
