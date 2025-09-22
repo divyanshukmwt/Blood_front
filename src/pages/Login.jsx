@@ -22,7 +22,7 @@ const Login = () => {
     const { email, password } = data;
     try {
       const res = await Axios.post("/users/login", { email, password });
-      if(res.status === 200){
+      if (res.status === 200) {
         setUser(res.data);
         navigate("/otp");
         toast.success("🎉 OTP successfully.")
@@ -33,7 +33,7 @@ const Login = () => {
       toast.error("❌ Something went wrong!")
     }
   };
-  
+
   const handleLoginSuccess = async (credentialResponse) => {
     try {
       const res = await Axios.post("/google-auth/verify", {
@@ -52,11 +52,12 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-zinc-black flex justify-center items-center text-white">
+    <div className="w-full h-screen bg-gray-50 flex justify-center items-center text-gray-900">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 w-[90%] lg:w-[30%] bg-[#121212] border-2 border-zinc-800 px-5 py-10 rounded-lg">
-        <h1 className="text-3xl font-Poppins text-center uppercase">
+        className="flex flex-col gap-6 w-[90%] lg:w-[30%] bg-white border border-gray-200 px-6 py-12 rounded-xl shadow-lg">
+
+        <h1 className="text-3xl font-Poppins text-center uppercase text-red-600">
           Login Now
         </h1>
 
@@ -69,11 +70,11 @@ const Login = () => {
                 message: "Invalid email address",
               },
             })}
-            className="font-Roboto mt-2 outline-none focus:border-sky-400 transition-all duration-200 border-2 border-zinc-800 bg-zinc-800 p-2 rounded w-full placeholder:text-[#A1A1AA]"
+            className="font-Roboto mt-2 outline-none focus:border-red-500 transition-all duration-200 border border-gray-300 bg-gray-100 p-3 rounded-lg w-full placeholder:text-gray-400"
             placeholder="Enter your email..."
           />
           {errors.email && (
-            <p className="text-[#FF3B30] font-Roboto">{errors.email.message}</p>
+            <p className="text-red-500 font-Roboto mt-1">{errors.email.message}</p>
           )}
         </div>
 
@@ -87,71 +88,70 @@ const Login = () => {
                   message: "Password must be at least 8 characters",
                 },
               })}
-              className="font-Roboto mt-2 outline-none focus:border-sky-400 transition-all duration-200 border-2 border-zinc-800 bg-zinc-800 p-2 rounded w-full"
+              className="font-Roboto mt-2 outline-none focus:border-red-500 transition-all duration-200 border border-gray-300 bg-gray-100 p-3 rounded-lg w-full"
               placeholder="Enter your password..."
               type={show ? "password" : "text"}
               id="password"
               autoComplete="true"
             />
             <button
+              type="button"
               onClick={() => setshow(!show)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-xl">
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xl">
               {show ? (
-                <TbEyeCancel className="text-red-400/70" />
+                <TbEyeCancel className="text-red-500/70" />
               ) : (
-                <TbEyeCheck className="text-green-400/70" />
+                <TbEyeCheck className="text-green-500/70" />
               )}
             </button>
           </div>
           {errors.password && (
-            <p className="text-[#FF3B30] font-Roboto">
-              {errors.password.message}
-            </p>
+            <p className="text-red-500 font-Roboto mt-1">{errors.password.message}</p>
           )}
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 rounded-md text-xl bg-sky-600 mt-5 cursor-pointer">
+          className="w-full py-3 rounded-lg text-xl bg-red-600 hover:bg-red-700 transition-all duration-200 mt-4 cursor-pointer font-Poppins text-white">
           Login
         </button>
 
         <div>
-          <p className="text-center font-Roboto text-lg">
+          <p className="text-center font-Roboto text-lg mt-2">
             Don't have an account?
             <span
               onClick={() => navigate("/register")}
-              className="text-sky-500 cursor-pointer">
-              {" "}
+              className="text-red-600 cursor-pointer ml-1">
               Register
             </span>
           </p>
         </div>
 
-        <div className="flex justify-center items-center gap-2">
-          <span className="w-[100px] h-[1px] bg-sky-500"></span>
-          <p className="text-lg">Or</p>
-          <span className="w-[100px] h-[1px] bg-sky-500"></span>
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <span className="w-[100px] h-[1px] bg-red-500"></span>
+          <p className="text-lg text-gray-400">Or</p>
+          <span className="w-[100px] h-[1px] bg-red-500"></span>
         </div>
 
-        <div className="flex justify-center items-center gap-x-4">
-          <p className="text-lg ">Login with</p>
+        <div className="flex justify-center items-center gap-x-4 mt-4">
+          <p className="text-lg text-gray-400">Login with</p>
           <GoogleLogin
             onSuccess={handleLoginSuccess}
             onError={handleLoginError}
           />
         </div>
 
-        <div>
-          <p className="text-center font-Roboto text-lg flex flex-col gap-y-2">
+        <div className="mt-4">
+          <p className="text-center font-Roboto text-lg flex flex-col gap-y-2 text-gray-600">
             Don't remember your password?
-            <Link to="/forget-password" className="text-sky-500 cursor-pointer">
+            <Link to="/forget-password" className="text-red-600 cursor-pointer">
               Forget Password
             </Link>
           </p>
         </div>
       </form>
     </div>
+
   );
 };
 

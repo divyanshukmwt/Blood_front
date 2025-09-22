@@ -1,38 +1,44 @@
 import React, { useContext, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import {AdminContext} from "../context/admin.context"
+import { AdminContext } from "../context/admin.context"
 import AdminAxios from "../config/AdminAxios"
 import { toast } from 'react-toastify';
 const AdminLogin = () => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-    const { setAdmin } = useContext(AdminContext);
-    const navigate = useNavigate();
+  const { setAdmin } = useContext(AdminContext);
+  const navigate = useNavigate();
 
 
-    const onSubmit = async (data) => {
-      const { email, password } = data;
-      try {
-        const res = await AdminAxios.post("/admin/login",{email,password});
-        setAdmin(res.data.admin);
-        localStorage.setItem("adminToken",res.data.token)
-        navigate("/admin")
-        toast.success("🎉 Login successfully.");
-      } catch (error) {
-        toast.error("❌ Try again!");
-      }
-    };
+  const onSubmit = async (data) => {
+    const { email, password } = data;
+    try {
+      const res = await AdminAxios.post("/admin/login", { email, password });
+      setAdmin(res.data.admin);
+      localStorage.setItem("adminToken", res.data.token)
+      navigate("/admin")
+      toast.success("🎉 Login successfully.");
+    } catch (error) {
+      toast.error("❌ Try again!");
+    }
+  };
   return (
-    <div className="w-full h-screen bg-black flex justify-center items-center text-white">
+    <div className="w-full min-h-screen bg-gray-50 flex justify-center items-center text-gray-900">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-7 w-[90%] lg:w-[35%] border-2 px-5 py-10 rounded-lg">
-        <h1 className="text-3xl font-Poppins text-center uppercase">Admin Login</h1>
+        className="flex flex-col gap-7 w-[90%] lg:w-[35%] border border-gray-200 bg-white px-6 py-10 rounded-lg shadow-lg"
+      >
+        {/* Heading */}
+        <h1 className="text-3xl font-Poppins text-center uppercase text-red-600">
+          Admin Login
+        </h1>
+
+        {/* Email Input */}
         <div>
           <label className="font-Poppins text-xl" htmlFor="email">
             Email:
@@ -45,15 +51,17 @@ const AdminLogin = () => {
                 message: "Invalid email address",
               },
             })}
-            className="font-Roboto mt-2 outline-none border p-2 rounded w-full"
+            className="font-Roboto mt-2 border border-gray-300 rounded px-3 py-2 w-full outline-none focus:border-red-500 transition-all duration-200"
             placeholder="Enter your email..."
             type="email"
             id="email"
           />
           {errors.email && (
-            <p className="text-[#FF3B30] font-Roboto">{errors.email.message}</p>
+            <p className="text-red-500 font-Roboto mt-1">{errors.email.message}</p>
           )}
         </div>
+
+        {/* Password Input */}
         <div>
           <label className="font-Poppins text-xl" htmlFor="password">
             Password:
@@ -66,23 +74,26 @@ const AdminLogin = () => {
                 message: "Password must be at least 6 characters",
               },
             })}
-            className="font-Roboto mt-2 outline-none border p-2 rounded w-full"
+            className="font-Roboto mt-2 border border-gray-300 rounded px-3 py-2 w-full outline-none focus:border-red-500 transition-all duration-200"
             placeholder="Enter your password..."
             type="password"
             id="password"
           />
           {errors.password && (
-            <p className="text-[#FF3B30] font-Roboto">
-              {errors.password.message}
-            </p>
+            <p className="text-red-500 font-Roboto mt-1">{errors.password.message}</p>
           )}
         </div>
 
-        <button type="submit" className="w-full py-3 bg-sky-500 mt-5">
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-Poppins rounded-md transition-all duration-200 mt-5"
+        >
           Login
         </button>
       </form>
     </div>
+
   );
 }
 

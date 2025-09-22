@@ -7,9 +7,9 @@ const Button = ({ navigating, text, val }) => {
     <button
       className={`${
         val
-          ? "bg-rose-900/90 hover:bg-rose-900/70 font-extrabold"
-          : "font-medium"
-      } w-fit tracking-wide text-white rounded-md overflow-y-hidden h-[3.25rem] cursor-pointer font-Poppins text-2xl transition-all duration-300`}
+          ? "bg-red-500 hover:bg-red-700" 
+          : "font-medium text-red-600 hover:text-red-700 border border-red-600"
+      } w-fit tracking-wide text-white rounded-md overflow-y-hidden h-[3.25rem] cursor-pointer font-[inter] uppercase text-2xl transition-all duration-300`}
       onClick={() => navigate(navigating)}>
       <motion.div
         initial={{ y: "0%" }}

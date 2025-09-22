@@ -10,28 +10,28 @@ import Axios from "../config/Axois";
 import AbandonWord from "../utils/AbandonWord";
 const ContactUs = () => {
   const animateRef = useRef();
-    const navigate = useNavigate();
-    const { user } = useContext(UserContext);
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-      reset
-    } = useForm();
-    const onSubmit = async (data) => {
-      console.log(data);
-      reset();
-      const res = await Axios.post("/users/contactUs",{name:user.name,email: user.email,message:data.message});
-      if(res.status == 200){
-        toast.success("Successfuly send.");
-        navigate("/users/profile");
-      } else {
-        toast.error("Something went wrong!");
-      }
-    };
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
+  const onSubmit = async (data) => {
+    console.log(data);
+    reset();
+    const res = await Axios.post("/users/contactUs", { name: user.name, email: user.email, message: data.message });
+    if (res.status == 200) {
+      toast.success("Successfuly send.");
+      navigate("/users/profile");
+    } else {
+      toast.error("Something went wrong!");
+    }
+  };
   return (
     <Animate ref={animateRef}>
-      <div className="w-full min-h-screen bg-black">
+      <div className="w-full min-h-screen bg-gray-50 text-gray-900">
         <Navbar
           animateRef={animateRef}
           field={[
@@ -42,20 +42,23 @@ const ContactUs = () => {
             { link: "/about", name: "About" },
           ]}
         />
-        <div className="w-full min-h-screen flex justify-center lg:py-20 items-center text-white">
+        <div className="w-full min-h-screen flex justify-center lg:py-20 items-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 bg-zinc-900 px-7 py-10 w-[90%] lg:w-[40%]">
-            <h1 className="text-center font-Poppins text-3xl lg:text-2xl">
+            className="flex flex-col gap-4 bg-white px-7 py-10 w-[90%] lg:w-[40%] shadow-lg rounded-md border border-gray-200"
+          >
+            <h1 className="text-center font-Poppins text-3xl lg:text-2xl text-red-600">
               Contact Us
             </h1>
+
+            {/* Name */}
             <div>
               <label className="font-Poppins text-xl" htmlFor="name">
                 Name:
               </label>
               <input
                 {...register("name")}
-                className="font-Roboto mt-2 outline-none border p-2 rounded w-full "
+                className="font-Roboto mt-2 outline-none border border-gray-300 p-2 rounded w-full focus:border-red-500 transition-all duration-200"
                 placeholder="Enter your name..."
                 type="text"
                 id="name"
@@ -63,10 +66,11 @@ const ContactUs = () => {
                 readOnly
               />
               {errors.name && (
-                <p className="text-[#FF3B30]">{errors.name.message}</p>
+                <p className="text-red-500 font-Roboto mt-1">{errors.name.message}</p>
               )}
             </div>
 
+            {/* Email */}
             <div>
               <label className="font-Poppins text-xl" htmlFor="email">
                 Email:
@@ -78,20 +82,21 @@ const ContactUs = () => {
                 value={user.email}
                 readOnly
                 {...register("email")}
-                className="font-Roboto mt-2 border p-2 rounded w-full outline-none"
+                className="font-Roboto mt-2 border border-gray-300 p-2 rounded w-full outline-none focus:border-red-500 transition-all duration-200"
               />
               {errors.email && (
-                <p className="text-[#FF3B30]">{errors.email.message}</p>
+                <p className="text-red-500 font-Roboto mt-1">{errors.email.message}</p>
               )}
             </div>
 
+            {/* Message */}
             <div>
               <label className="font-Poppins text-xl" htmlFor="message">
-                Message:{" "}
+                Message:
               </label>
               <textarea
                 id="message"
-                className="font-Roboto border p-2 mt-2 resize-none rounded w-full outline-none h-50"
+                className="font-Roboto border border-gray-300 p-2 mt-2 resize-none rounded w-full outline-none h-40 focus:border-red-500 transition-all duration-200"
                 placeholder="Enter your message..."
                 {...register("message", {
                   required: "Message is required",
@@ -104,19 +109,22 @@ const ContactUs = () => {
                       ? "Message contains restricted or offensive words!"
                       : true;
                   },
-                })}></textarea>
+                })}
+              ></textarea>
               {errors.message && (
-                <p className="text-[#FF3B30]">{errors.message.message}</p>
+                <p className="text-red-500 font-Roboto mt-1">{errors.message.message}</p>
               )}
             </div>
 
+            {/* Submit */}
             <button
               onClick={(e) => {
                 e.preventDefault();
                 handleSubmit(onSubmit)();
               }}
               type="submit"
-              className="bg-blue-500 text-white p-2 rounded">
+              className="bg-red-600 hover:bg-red-700 text-white p-2 rounded mt-2 transition-all duration-200 font-Poppins"
+            >
               Submit
             </button>
           </form>

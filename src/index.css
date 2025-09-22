@@ -18,8 +18,12 @@
     font-family: "Roboto";
     src: url(assets/Roboto-VariableFont_wdth,wght.ttf);
 }
+@font-face {
+    font-family: "oswald";
+    src: url(assets/Oswald-Light.ttf);
+}
 
-@theme {
+@theme{
     --font-inter: "inter";
     --font-OpenSans: "OpenSans";
     --font-Poppins: "Poppins";
@@ -54,14 +58,6 @@ body{
 #scroller::-webkit-scrollbar-thumb{
     background-color: rgb(255, 255, 255);
     border-radius: 5px;
-}
-#view_1{
-     background-image: 
-    linear-gradient(to top,rgb(0, 0, 0), rgba(8, 10, 10, 0.5),rgba(64, 78, 77, 0.2), rgba(201, 249, 245, 0),rgba(201, 249, 245, 0),rgba(201, 249, 245, 0)),
-    url("/image/Landing.webp");
-    background-size: cover;
-    background-position: top;
-    background-repeat: no-repeat;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
