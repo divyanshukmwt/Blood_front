@@ -2,16 +2,12 @@ import React, { useRef, useState } from 'react'
 import Navbar from "../utils/Navbar"
 import AboutCards from '../components/AboutCards';
 import AboutDets  from '../utils/About';
-import Animate from "../components/Animate"
 import Footer from "../components/Footer"
 const About = () => {
-  const animateRef = useRef();
     const [eachCard, setEachCard] = useState(AboutDets);
   return (
-    <Animate ref={animateRef}>
-      <div className="w-full min-h-screen bg-black text-white">
+      <div className="w-full min-h-screen bg-white text-white">
         <Navbar
-          animateRef={animateRef}
           field={[
             { link: "/users/profile", name: "Profile" },
             { link: "/donate/request-list", name: "Donate" },
@@ -35,7 +31,6 @@ const About = () => {
         </div>
         <Footer />
       </div>
-    </Animate>
   );
 }
 

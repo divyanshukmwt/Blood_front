@@ -5,10 +5,8 @@ import Axios from "../config/Axois";
 import { DonarContext } from "../context/donate.context";
 import { receiveMessage } from "../config/Socket";
 import { CiNoWaitingSign } from "react-icons/ci";
-import Animate from "../components/Animate";
 
 const Donate = () => {
-  const animateRef = useRef();
   const { DonatePost, setDonatePost } = useContext(DonarContext);
   const [post, SetPost] = useState(DonatePost);
   const [modal, setModal] = useState(null);
@@ -37,7 +35,7 @@ const Donate = () => {
         SetPost(sorted);
       }
     });
-    
+
     receiveMessage("new-post", (data) => {
       const sorted = [...data].sort(
         (a, b) => new Date(b.date) - new Date(a.date)
@@ -48,10 +46,8 @@ const Donate = () => {
   }, []);
 
   return (
-    <Animate ref={animateRef}>
-      <div className="w-full min-h-screen bg-black text-white pt-20 pb-4">
+      <div className="w-full min-h-screen bg-white text-black pt-20 pb-4">
         <Navbar
-          animateRef={animateRef}
           field={[
             { link: "/users/profile", name: "Profile" },
             { link: "/", name: "Home" },
@@ -79,14 +75,14 @@ const Donate = () => {
                 />
               ))
           ) : (
-            <p className="text-xl flex gap-x-2 items-center">
-              <CiNoWaitingSign className="text-2xl text-[#FF3B30]" />
+            <p className="text-xl flex gap-x-2 items-center text-red-500">
+              <CiNoWaitingSign className="text-2xl" />
               No Request Found!
             </p>
           )}
         </div>
       </div>
-    </Animate>
+
   );
 };
 

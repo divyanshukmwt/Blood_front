@@ -44,7 +44,7 @@ const Navbar = ({ field, animateRef }) => {
   return (
     <div className="w-full pr-5 lg:pr-20 py-4 flex justify-end fixed top-0 z-40">
       {/* Desktop Menu (unchanged) */}
-      <div className="hidden lg:flex gap-10 text-xl font-[inter] font-medium cursor-pointer text-black">
+      <div className="hidden lg:flex gap-10 text-xl font-[oswald] font-medium cursor-pointer text-black">
         {field.map((item, index) =>
           item.name !== "Logout" ? (
             <button key={index} onClick={() => handleNavigate(item.link)}>

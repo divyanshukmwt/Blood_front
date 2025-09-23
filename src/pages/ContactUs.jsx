@@ -2,14 +2,13 @@ import { useContext, useRef } from 'react'
 import Navbar from '../utils/Navbar'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import Animate from "../components/Animate";
 import Footer from "../components/Footer";
 import { UserContext } from '../context/user.context';
 import { toast } from 'react-toastify';
 import Axios from "../config/Axois";
 import AbandonWord from "../utils/AbandonWord";
+
 const ContactUs = () => {
-  const animateRef = useRef();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const {
@@ -30,10 +29,8 @@ const ContactUs = () => {
     }
   };
   return (
-    <Animate ref={animateRef}>
       <div className="w-full min-h-screen bg-gray-50 text-gray-900">
         <Navbar
-          animateRef={animateRef}
           field={[
             { link: "/users/profile", name: "Profile" },
             { link: "/", name: "Home" },
@@ -131,7 +128,6 @@ const ContactUs = () => {
         </div>
         <Footer />
       </div>
-    </Animate>
   );
 }
 

@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import card1 from "../../public/card1.png";
 import card2 from "../../public/card2.png";
-import card3 from "../../public/card3.png";
+import card3 from "../../public/card3.jpg";
 import card4 from "../../public/card4.png";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -118,8 +118,8 @@ const Page4 = () => {
           ref={(el) => (textRef.current[index] = el)}
           className="absolute inset-0 flex flex-col justify-center items-center text-center px-4"
         >
-          <h3 className="text-white text-2xl font-bold">{card.title}</h3>
-          <p className="text-white mt-2">{card.subtitle}</p>
+          <h3 className="text-white text-2xl font-[oswald] font-bold">{card.title}</h3>
+          <p className="text-white font-[inter] mt-2">{card.subtitle}</p>
         </div>
       </div>
     ))}

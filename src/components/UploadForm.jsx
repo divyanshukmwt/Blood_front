@@ -61,20 +61,28 @@ const UploadForm = ({ email, fn }) => {
   };
 
   return (
-    <div className="picModal w-full h-screen backdrop-blur-3xl z-50 px-4 fixed top-0 left-0">
+    <div className="picModal w-full h-screen backdrop-blur-2xl bg-black/30 z-50 px-4 fixed top-0 left-0 flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col absolute w-[90%] lg:w-[40%] rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-y-4 bg-zinc-700/70 shadow-[0px_10px_100px_rgba(255,255,255,0.5)] px-4 py-12">
+        className="flex flex-col relative w-[90%] lg:w-[40%] rounded-xl bg-white shadow-[0px_8px_40px_rgba(0,0,0,0.25)] px-6 py-10 gap-y-6 transition-all duration-300"
+      >
+        {/* Close Button */}
         <CgClose
           onClick={() => fn(false)}
-          className="absolute top-5 right-5 text-2xl cursor-pointer"
+          className="absolute top-4 right-4 text-3xl text-gray-700 cursor-pointer hover:rotate-90 transition-transform duration-300"
         />
+
+        {/* File Input */}
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="bg-gray-800 px-2 py-4 text-xl w-[90%]"
+          className="bg-gray-100 px-4 py-3 rounded-lg text-lg text-gray-800 w-full cursor-pointer 
+                 file:cursor-pointer file:border-none file:px-3 file:py-2 file:rounded-md 
+                 file:bg-sky-500 file:text-white hover:file:bg-sky-600 transition-all"
         />
+
+        {/* Cropper */}
         {imageUrl && (
           <div className="w-full mt-4">
             <Cropper
@@ -91,8 +99,10 @@ const UploadForm = ({ email, fn }) => {
             />
           </div>
         )}
+
+        {/* Preview */}
         {previewUrl && (
-          <div className="w-32 h-32 border-2 border-white overflow-hidden rounded-full mt-2">
+          <div className="w-32 h-32 border-4 border-sky-500 overflow-hidden rounded-full mt-4 shadow-md mx-auto">
             <img
               src={previewUrl}
               alt="Preview"
@@ -101,11 +111,16 @@ const UploadForm = ({ email, fn }) => {
           </div>
         )}
 
-        <button type="submit" className="bg-sky-500 px-20 py-3 rounded-sm">
+        {/* Upload Button */}
+        <button
+          type="submit"
+          className="bg-sky-500 hover:bg-sky-600 text-white font-medium text-lg px-10 py-3 rounded-lg mt-4 transition-all duration-300 hover:scale-105"
+        >
           Upload
         </button>
       </form>
     </div>
+
   );
 };
 

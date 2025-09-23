@@ -4,11 +4,11 @@ import { UserContext } from '../context/user.context';
 import { useNavigate } from 'react-router-dom';
 import PdfDownloader from './PdfDownloader';
 import { toast } from 'react-toastify';
-const Stricks = ({bloodGroup, date, time, status, id}) => {
-  const {setUser} = useContext(UserContext);
+const Stricks = ({ bloodGroup, date, time, status, id }) => {
+  const { setUser } = useContext(UserContext);
   const navigator = useNavigate()
-  const handelDelete = (id)=>{
-    sendMessage("delete-Post",id);
+  const handelDelete = (id) => {
+    sendMessage("delete-Post", id);
     toast.success("Delete successfully.")
   }
   useEffect(() => {
@@ -19,35 +19,42 @@ const Stricks = ({bloodGroup, date, time, status, id}) => {
   }, []);
 
   return (
-    <div className="border-2 border-[#373737] bg-[#121212] rounded-lg p-5 lg:p-3 flex flex-col gap-y-2 w-full lg:w-[32%]">
-      <h3 className="text-2xl font-Poppins">
-        RQ Type - <span className="text-[#FF6B6B]">{bloodGroup}</span>
+    <div className="border-2 border-gray-300 bg-white rounded-lg shadow-md p-5 lg:p-4 flex flex-col gap-y-3 w-full lg:w-[32%] transition-all duration-200 hover:shadow-xl">
+      <h3 className="text-2xl font-Poppins text-gray-800">
+        RQ Type - <span className="text-red-500 font-semibold">{bloodGroup}</span>
       </h3>
-      <p className="text-2xl font-Poppins">
-        RQ Date - <span className="text-[#3DE8E0]">{date}</span>
+      <p className="text-2xl font-Poppins text-gray-700">
+        RQ Date - <span className="text-teal-600 font-medium">{date}</span>
       </p>
-      <p className="text-2xl font-Poppins">
-        RQ Time - <span className="text-[#3DE8E0]">{time}</span>
+      <p className="text-2xl font-Poppins text-gray-700">
+        RQ Time - <span className="text-teal-600 font-medium">{time}</span>
       </p>
+
       {status === "pending" ? (
         <button
-          onClick={() => {
-            handelDelete(id);
-          }}
-          className="w-full py-2 font-Roboto cursor-pointer  uppercase text-xl font-semibold rounded bg-[#FF6B6B] hover:bg-[#FF6B6B]/80 transition-all duration-200">
+          onClick={() => handelDelete(id)}
+          className="w-full py-2 font-Roboto cursor-pointer uppercase text-xl font-semibold rounded bg-red-500 text-white 
+                 hover:bg-red-600 transition-all duration-200"
+        >
           Delete
         </button>
       ) : (
-        <div className="flex gap-x-2">
+        <div className="flex gap-x-3">
           <button
             onClick={() => navigator(`/map/${id}`)}
-            className="w-full py-2 font-Roboto uppercase text-xl font-semibold rounded bg-[#374785] cursor-pointer hover:bg-[#374785]/70 transition-all duration-200">
+            className="w-1/2 py-2 font-Roboto uppercase text-xl font-semibold rounded bg-blue-600 text-white 
+                   hover:bg-blue-700 transition-all duration-200"
+          >
             Map
           </button>
-          <PdfDownloader id={id} />
+          <div className="w-1/2">
+            <PdfDownloader id={id} className="w-full py-2 font-Roboto text-white uppercase text-xl font-semibold rounded bg-green-500  
+                                          hover:bg-green-600 transition-all duration-200"/>
+          </div>
         </div>
       )}
     </div>
+
   );
 }
 

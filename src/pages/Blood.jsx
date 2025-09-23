@@ -3,10 +3,8 @@ import Navbar from "../utils/Navbar";
 import RequestCard from "../components/RequestCard";
 import { UserContext } from "../context/user.context";
 import { CiNoWaitingSign } from "react-icons/ci";
-import Animate from "../components/Animate";
 
 const Blood = () => {
-  const animateRef = useRef();
   const { user } = useContext(UserContext);
   const [filterData, setFilterData] = useState("allRequest");
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -31,10 +29,8 @@ const Blood = () => {
   }, [filterData, user?.bloodRequest]);
 
   return (
-    <Animate ref={animateRef}>
-      <div className="w-full min-h-screen bg-[#000] text-white pt-20 pb-4">
+      <div className="w-full min-h-screen bg-white text-black pt-20 pb-4">
         <Navbar
-          animateRef={animateRef}
           field={[
             { link: "/users/profile", name: "Profile" },
             { link: "/", name: "Home" },
@@ -44,31 +40,34 @@ const Blood = () => {
           ]}
         />
 
-        <div className="fixed w-1/2 lg:w-1/4 p-2 border-2 bg-black text-white top-20 right-5 z-30">
+        {/* Filter Dropdown */}
+        <div className="fixed w-1/2 lg:w-1/4 p-2 border-2 bg-white text-black top-20 right-5 z-30">
           <select
             value={filterData}
             onChange={(e) => setFilterData(e.target.value)}
-            className="w-full p-2 bg-black text-white outline-none rounded-md">
+            className="w-full p-2 bg-white text-black outline-none rounded-md border border-gray-300"
+          >
             <option value="allRequest">All Request</option>
             <option value="pending">Pending</option>
             <option value="Accepted">Accepted</option>
           </select>
         </div>
 
+        {/* Requests Grid */}
         <div className="px-5 flex flex-col gap-y-4 lg:flex-row gap-x-4 flex-wrap">
           {filteredPosts.length > 0 ? (
             filteredPosts.map((item, index) => (
-              <RequestCard key={index} user={user} data={item} />
+              <RequestCard key={index} user={user} data={item} lightTheme />
             ))
           ) : (
-            <p className="text-xl flex gap-x-2 items-center">
-              <CiNoWaitingSign className="text-2xl text-[#FF3B30]" />
+            <p className="text-xl flex gap-x-2 items-center text-red-500">
+              <CiNoWaitingSign className="text-2xl" />
               No Request Found!
             </p>
           )}
         </div>
       </div>
-    </Animate>
+
   );
 };
 

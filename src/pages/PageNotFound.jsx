@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom';
 import Navbar from '../utils/Navbar';
 import { animate, stagger } from "motion"
 import { splitText } from "motion-plus"
-import Animate from '../components/Animate';
 
 const PageNotFound = () => {
-    const animateRef = useRef();
     const containerRef = useRef();
     const paraRef = useRef();
     useEffect(() => {
@@ -64,10 +62,8 @@ const PageNotFound = () => {
       });
     }, []);
   return (
-    <Animate ref={animateRef}>
       <div className="text-white cursor-help flex flex-col gap-y-32 lg:gap-y-13 items-center justify-center h-screen">
         <Navbar
-          animateRef={animateRef}
           field={[
             { link: "/", name: "Home" },
             { link: "/donate/request-list", name: "Donate" },
@@ -94,7 +90,6 @@ const PageNotFound = () => {
           Go Home Please 😊
         </Link>
       </div>
-    </Animate>
   );
 }
 

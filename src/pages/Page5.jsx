@@ -110,8 +110,8 @@ const Page5 = () => {
             activeStep === idx ? "bg-red-100 shadow-lg" : "bg-white"
           }`}
         >
-          <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-          <p className="text-gray-700">{step.description}</p>
+          <h3 className="text-xl font-bold font-[oswald] mb-2">{step.title}</h3>
+          <p className="text-gray-700 [inter] ">{step.description}</p>
         </div>
       ))}
     </div>

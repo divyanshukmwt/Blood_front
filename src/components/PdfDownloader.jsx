@@ -23,7 +23,7 @@ const PdfDownloader = (id) => {
   return (
     <button
       onClick={handleDownload}
-      className="w-full py-2 font-Roboto uppercase text-xl font-semibold rounded bg-[#2cb2ab] cursor-pointer hover:bg-[#2cb2ab]/70 transition-all duration-200">
+      className="w-full py-2 text-white font-Roboto uppercase text-xl font-semibold rounded bg-[#2cb2ab] cursor-pointer hover:bg-[#2cb2ab]/70 transition-all duration-200">
       Document
     </button>
   );
