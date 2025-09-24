@@ -67,7 +67,7 @@ const AwarenessSection = () => {
 
   return (
     <div className="bg-gray-50 py-16 px-6 lg:px-32">
-      <h2 className="text-4xl font-[oswald] text-center text-red-700 mb-12">
+      <h2 className="text-4xl font-[oswald] font-bold text-center text-red-700 mb-12">
         Blood Donation Awareness
       </h2>
 

@@ -11,14 +11,12 @@ import BlockInterface from '../components/BlockInterface';
 import { MdVerified } from "react-icons/md";
 import DonarStricks from '../components/DonarStricks';
 import Form from "../components/Form"
-import Animate from '../components/Animate';
 
 const Profile = () => {
   const { user, setUser } = useContext(UserContext);
   const [userDets, setUserDets] = useState(user);
   const [picModal, setPicModal] = useState(false);
   const [formModal, setFormModal] = useState(false);
-  const animateRef = useRef();
 
   useEffect(() => {
     receiveMessage("allPost", (data) => {
@@ -48,7 +46,7 @@ const Profile = () => {
     }
   }, [userDets?.number]);
   return (
-    <Animate ref={animateRef}>
+    <>
       {formModal && <Form fn={setFormModal} />}
       <div className="bg-gray-100 w-full h-fit text-black">
         {/* Navbar */}
@@ -225,7 +223,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </Animate>
+      </>
   );
 }
 

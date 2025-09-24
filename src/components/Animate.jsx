@@ -1,17 +1,27 @@
-import React, { forwardRef } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, forwardRef } from "react";
+import { gsap } from "gsap";
 
 const Animate = forwardRef(({ children }, ref) => {
+  const el = useRef(null);
+
+  useEffect(() => {
+    gsap.fromTo(
+      el.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.6, ease: "power2.out" }
+    );
+  }, []);
+
   return (
-    <motion.div
+    <div ref={(node) => {
+        el.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
       className="w-full min-h-screen bg-gray-100"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.6 }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 });
 

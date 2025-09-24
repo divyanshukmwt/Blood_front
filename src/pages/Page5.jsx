@@ -77,7 +77,7 @@ const Page5 = () => {
   return (
 <div className="w-full min-h-screen bg-gray-100 flex flex-col items-center py-20">
   {/* Section Heading */}
-  <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-16 text-center text-red-700">
+  <h2 className="text-4xl font-[oswald] sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-16 text-center text-red-700">
     Our Life-Saving Process
   </h2>
 

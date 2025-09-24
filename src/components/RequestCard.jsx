@@ -12,30 +12,27 @@ const RequestCard = ({ data, user }) => {
             className="w-full h-full object-cover"
           />
         </div>
-        <h1 className="font-Poppins text-2xl font-semibold">
-          Name: <span className="text-yellow-600">{user.name}</span>
-        </h1>
-        <h1 className="font-Roboto text-xl">
-          ID: <span className="text-gray-500">{user._id}</span>
+        <h1 className="font-Poppins mt-6 text-xl font-semibold">
+          Name: <span className="text-gray-600">{user.name}</span>
         </h1>
       </div>
-      <h4 className="font-Roboto text-2xl">
+      <h4 className="font-Roboto text-xl">
         REQUEST: <span className="text-red-500">{data.bloodType}</span>
       </h4>
-      <h4 className="font-Roboto text-2xl">
-        Date: <span className="text-sky-500">{data.date}</span>
+      <h4 className="font-Roboto text-xl">
+        Date: <span className="text-gray-500">{data.date}</span>
       </h4>
-      <h4 className="font-Roboto text-2xl">
-        Time: <span className="text-sky-500">{data.time}</span>
+      <h4 className="font-Roboto text-xl">
+        Time: <span className="text-gray-500">{data.time}</span>
       </h4>
 
       {data.status === "pending" ? (
-        <button className="bg-orange-400 rounded-full py-4 font-Poppins text-2xl flex gap-x-2 items-center justify-center cursor-not-allowed hover:bg-orange-500 transition-colors duration-200">
+        <button className="bg-orange-400 text-white rounded-full py-4 font-Poppins text-2xl flex gap-x-2 items-center justify-center cursor-not-allowed hover:bg-orange-500 transition-colors duration-200">
           <LiaUserClockSolid />
           Pending
         </button>
       ) : (
-        <button className="bg-green-500 py-4 rounded-full font-Poppins text-2xl flex gap-x-2 items-center justify-center cursor-not-allowed hover:bg-green-600 transition-colors duration-200">
+        <button className="bg-green-500 py-4 text-white rounded-full font-Poppins text-2xl flex gap-x-2 items-center justify-center cursor-not-allowed hover:bg-green-600 transition-colors duration-200">
           <PiConfettiBold />
           Accepted
         </button>

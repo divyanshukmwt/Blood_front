@@ -80,7 +80,7 @@ const Otp = () => {
       <div className="border border-gray-200 bg-white w-[90%] lg:w-[30%] rounded-lg px-8 py-10 flex flex-col gap-y-8 items-center shadow-lg">
 
         {/* Header */}
-        <h1 className="text-4xl mb-2 font-Poppins uppercase border-b-2 border-r-2 border-blue-400 shadow-lg px-4 pb-2 text-red-600">
+        <h1 className="text-4xl mb-2 font-Poppins uppercase border-b-2 border-r-2 shadow-lg px-4 pb-2 text-red-600">
           OTP Center
         </h1>
 

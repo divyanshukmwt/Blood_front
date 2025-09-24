@@ -35,22 +35,22 @@ const DonarCard = ({ data, btn, fn }) => {
               "Unknown"
             )}
           </div>
-          <h1 className="font-Poppins text-2xl text-gray-800">
-            Name: <span className="text-yellow-600">{data.reciventId.name}</span>
-          </h1>
         </div>
+        <h1 className="font-Poppins text-xl text-gray-700">
+          Name: <span className="text-gray-800">{data.reciventId.name}</span>
+        </h1>
         <h4 className="font-Roboto text-xl text-gray-700">
           Required : <span className="text-red-500">{data.bloodType}</span>
         </h4>
         <h4 className="font-Roboto text-xl text-gray-700">
-          Date : <span className="text-sky-500">{data.date}</span>
+          Date : <span className="text-gray-500">{data.date}</span>
         </h4>
         <h4 className="font-Roboto text-xl text-gray-700">
-          Time : <span className="text-sky-500">{data.time}</span>
+          Time : <span className="text-gray-500">{data.time}</span>
         </h4>
         <button
           onClick={() => fn(true)}
-          className="bg-sky-500 hover:bg-sky-600 rounded-lg uppercase font-bold py-4 font-Poppins cursor-pointer tracking-widest text-xl transition-all duration-200 text-white shadow"
+          className="bg-green-600 hover:bg-green-700 rounded-lg uppercase font-bold py-4 font-Poppins cursor-pointer tracking-widest text-xl transition-all duration-200 text-white shadow"
         >
           Donate
         </button>

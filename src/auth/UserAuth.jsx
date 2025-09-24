@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user.context";
 import Axios from "../config/Axois";
+import Loader2 from "../components/Loader2"; // ⬅️ import loader
 
 const UserAuth = () => {
   const { setUser } = useContext(UserContext);
@@ -36,11 +37,7 @@ const UserAuth = () => {
   }, [navigate, setUser]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-white text-white text-2xl">
-        loading....
-      </div>
-    );
+    return <Loader2 />; // ⬅️ show loader here
   }
 
   return <Outlet />;
