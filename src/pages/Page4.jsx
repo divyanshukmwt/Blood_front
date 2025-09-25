@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import card1 from "../../public/card1.png";
-import card2 from "../../public/card2.png";
-import card3 from "../../public/card3.jpg";
-import card4 from "../../public/card4.png";
+import card1 from "../../public/card1.webp";
+import card2 from "../../public/card2.webp";
+import card3 from "../../public/card3.webp";
+import card4 from "../../public/card4.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 

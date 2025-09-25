@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../utils/Navbar";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
-import landing from "../../public/landing.jpg";
+import landing from "../../public/landing.webp";
 import Page2 from "./Page2";
 import Page3 from "./Page3";
 import Page4 from "./Page4";

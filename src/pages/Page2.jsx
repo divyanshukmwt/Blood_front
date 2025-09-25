@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import page2 from "../../public/page2.jpg";
+import page2 from "../../public/page2.webp";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
