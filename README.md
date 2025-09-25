@@ -54,13 +54,13 @@ _The Blood Hub Website is a full-stack platform designed to connect blood donors
 > **Backend Repository**
 
 ```bash
-git clone https://github.com/Sc-Designs/Blood_hub_Backend
+git clone https://github.com/divyanshukmwt/Blood_back.git
 
 ```
 > ## Frontend Repository
 
 ```bash
-git clone https://github.com/Sc-Designs/Blood_hub_Frontend
+git clone https://github.com/divyanshukmwt/Blood_front.git
 ```
 
 ## 2. Setup Backend
@@ -116,7 +116,7 @@ Visit http://localhost:5173 to access the React app.
 # 🌐 Deployment
 
 ### The live version of the application is available at: 
-https://bloodcenter.netlify.app/
+https://blood-hub-front.netlify.app/
 
 
 # 📸 Screenshots
