@@ -6,7 +6,7 @@
 
 # 📖 Overview
 
-_The Blood Hub Website is a full-stack platform designed to connect blood donors and receivers quickly and efficiently. It features real-time location tracking and routing between users using Leaflet.js and Leaflet Routing Machine — making it easier to save lives during emergencies._
+_The RedHope website is a full-stack platform designed to connect blood donors and receivers quickly and efficiently. It features real-time location tracking and routing between users using Leaflet.js and Leaflet Routing Machine — making it easier to save lives during emergencies._
 
 ---
 
