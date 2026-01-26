@@ -9,6 +9,11 @@ axiosInstance.interceptors.request.use((config)=>{
   if(userToken){
     config.headers.Authorization = `Bearer ${userToken}`;
   }
+  // also support legacy 'token' key
+  const legacy = localStorage.getItem('token');
+  if(legacy && !config.headers.Authorization){
+    config.headers.Authorization = `Bearer ${legacy}`;
+  }
   return config;
 })
 

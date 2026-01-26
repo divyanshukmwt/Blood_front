@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import Axios from "../config/Axois";
 import { UserContext } from "../context/user.context";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
 import { TbEyeCancel } from "react-icons/tb";
 import { TbEyeCheck } from "react-icons/tb";
@@ -23,32 +22,20 @@ const Login = () => {
     try {
       const res = await Axios.post("/users/login", { email, password });
       if (res.status === 200) {
-        setUser(res.data);
-        navigate("/otp");
-        toast.success("🎉 OTP successfully.")
+        const payload = res.data.user || res.data;
+        setUser(payload);
+        if (res.data.token) {
+          localStorage.setItem("userToken", res.data.token);
+          localStorage.setItem("token", res.data.token);
+        }
+        navigate("/");
+        toast.success("🎉 Login successful.");
       } else {
         toast.error("Something went wrong!");
       }
     } catch (error) {
-      toast.error("❌ Something went wrong!")
+      toast.error("❌ Something went wrong!");
     }
-  };
-
-  const handleLoginSuccess = async (credentialResponse) => {
-    try {
-      const res = await Axios.post("/google-auth/verify", {
-        token: credentialResponse.credential,
-      });
-      setUser(res.data);
-      navigate("/otp");
-      toast.success("🎉 OTP successfully.")
-    } catch (err) {
-      toast.error("Google login failed. Please try again.");
-    }
-  };
-
-  const handleLoginError = () => {
-    toast.error("❌ Something went wrong!");
   };
 
   return (
@@ -131,14 +118,6 @@ const Login = () => {
           <span className="w-[100px] h-[1px] bg-red-500"></span>
           <p className="text-lg text-gray-400">Or</p>
           <span className="w-[100px] h-[1px] bg-red-500"></span>
-        </div>
-
-        <div className="flex justify-center items-center gap-x-4 mt-4">
-          <p className="text-lg text-gray-400">Login with</p>
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={handleLoginError}
-          />
         </div>
 
         <div className="mt-4">

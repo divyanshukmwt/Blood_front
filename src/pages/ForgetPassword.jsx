@@ -1,7 +1,6 @@
 import Axios from '../config/Axois';
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify';
-import { receiveMessage, sendMessage } from '../config/Socket';
 import { TbEyeCancel } from "react-icons/tb";
 import { TbEyeCheck } from "react-icons/tb";
 import { Link, useNavigate } from 'react-router-dom';
@@ -32,22 +31,13 @@ const ForgetPassword = () => {
   const otpHandeler = (e) => {
     e.preventDefault();
     if (otp.length == 4 && emailRegex.test(email)) {
-      toast.info("Wait until we verify.");
-      sendMessage("otp-sender", { email, otp });
+      // proceed to password input — server will validate OTP when updating password
+      setpassModal(true);
     } else {
       toast.error("Input not Valid.");
       setpassModal(false);
     }
   }
-  useEffect(() => {
-    receiveMessage("otp-result", (data) => {
-      if (data.result) {
-        setpassModal(data.result);
-      } else {
-        setpassModal(data.result);
-      }
-    });
-  }, [])
   const passwordHandel = async () => {
     if (passregex.test(password)) {
       try {

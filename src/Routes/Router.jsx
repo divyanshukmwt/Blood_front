@@ -14,11 +14,11 @@ import AdminLogin from "../pages/AdminLogin";
 import Maintanence from "../pages/Maintanence";
 import ProtectedRoute from "../components/ProtectedRoute";
 import SeeAllUsers from "../pages/SeeAllUsers";
-import Otp from "../pages/Otp";
 import MapView from "../pages/MapView";
 import Register from "../pages/Register";
 import TicketRaiser from "../pages/TicketRaiser";
 import ForgetPassword from "../pages/ForgetPassword";
+// SignIn/SignUp (Clerk) removed
 import PageNotFound from "../pages/PageNotFound";
 
 const AllRouter = () => {
@@ -36,8 +36,8 @@ const AllRouter = () => {
           <Route path="/maintanence" element={<Maintanence />} />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          {/* Clerk sign-in/up removed; use local /login and /register */}
           <Route path="/forget-password" element={<ForgetPassword />}/>
-          <Route path="/otp" element={<Otp />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
 

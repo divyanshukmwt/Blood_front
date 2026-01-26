@@ -28,14 +28,16 @@
         strokeDashoffset: 0,
         duration: 2,
         ease: "power2.out",
-        onUpdate: function () {
-            // progress goes 0 → 1
-            const progress = this.progress();
+                onUpdate: function () {
+                        // progress goes 0 → 1
+                        const progress = this.progress();
 
-            // Animate text opacity and scale gradually with circle
-            textRef.current.style.opacity = progress;
-            textRef.current.style.transform = `scale(${0.8 + progress * 0.2})`;
-        },
+                        // Animate text opacity and scale gradually with circle
+                        if (textRef.current) {
+                            textRef.current.style.opacity = progress;
+                            textRef.current.style.transform = `scale(${0.8 + progress * 0.2})`;
+                        }
+                },
         });
     }, [onComplete]);
 
