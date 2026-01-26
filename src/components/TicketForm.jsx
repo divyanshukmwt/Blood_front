@@ -34,7 +34,7 @@ const TicketForm = ({vari, fn}) => {
         toast.success("👏🏽 Send successfully");
         document.querySelector(".ticket").value = "" ;
         document.querySelector(".desc").value = "";
-      } catch (error) {
+      } catch {
         toast.error("❌ Something went wrong!");
       }
     };

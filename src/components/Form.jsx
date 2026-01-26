@@ -18,7 +18,7 @@ const Form = ({ fn }) => {
     setUser(res.data);
     fn(false);
     toast.success("👏🏽 Update successfully!");
-  } catch (err){
+  } catch {
     toast.error("❌ Something went wrong!");
   }
   };

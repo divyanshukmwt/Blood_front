@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import { AdminContext } from "../context/admin.context"
@@ -23,7 +23,7 @@ const AdminLogin = () => {
       localStorage.setItem("adminToken", res.data.token)
       navigate("/admin")
       toast.success("🎉 Login successfully.");
-    } catch (error) {
+    } catch {
       toast.error("❌ Try again!");
     }
   };

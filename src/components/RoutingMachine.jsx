@@ -26,7 +26,7 @@ const RoutingMachine = ({ from, to }) => {
       routeWhileDragging: false,
       show: false,
       addWaypoints: false,
-      createMarker: function (i, waypoint, n) {
+      createMarker: function (i, waypoint) {
         return L.marker(waypoint.latLng, {
           draggable: false,
           icon: customIcon

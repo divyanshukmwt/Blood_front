@@ -62,7 +62,7 @@ const MapView = () => {
           setLocation(coords);
           sendMessage("share-location", { id, location: coords });
         },
-        (err) => {
+        () => {
           toast.error("Error retrieving location.");
         },
         {

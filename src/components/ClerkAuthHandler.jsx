@@ -41,7 +41,7 @@ const ClerkAuthHandler = () => {
         if (!path.startsWith('/admin')) {
           window.location.href = '/';
         }
-      } catch (err) {
+      } catch {
         // ignore
       }
     };

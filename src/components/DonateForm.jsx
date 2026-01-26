@@ -4,7 +4,7 @@ import { UserContext } from '../context/user.context';
 import { AiFillCloseCircle } from "react-icons/ai";
 import { FaHandshakeSimple } from "react-icons/fa6";
 
-import { receiveMessage, sendMessage } from '../config/Socket';
+import { sendMessage } from '../config/Socket';
 import { toast } from 'react-toastify';
 const DonateForm = ({modal, modalfn, name, dataId}) => {
     const ref = useRef()
@@ -31,7 +31,7 @@ const DonateForm = ({modal, modalfn, name, dataId}) => {
       sendMessage("accepted-request",{postId,donarId, donarNumber});
       modalfn(false);
       toast.success("🎉 Donate successfully.");
-    }catch(err){
+    }catch{
       toast.error("❌ Something went wrong!");
     }
   }

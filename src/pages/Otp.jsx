@@ -70,7 +70,7 @@ const Otp = () => {
         toast.success("🎉 Login successfully.")
       }
       else toast.error("❌ OTP Must be 4 Digit.")
-    } catch (err) {
+    } catch {
       toast.error("❌ Something went wrong!")
     }
   }

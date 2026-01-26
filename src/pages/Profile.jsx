@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Navbar from '../utils/Navbar'
 import { PiGooglePhotosLogoFill } from "react-icons/pi";
 import Scales from '../components/Scales';

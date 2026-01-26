@@ -33,7 +33,7 @@ const Login = () => {
       } else {
         toast.error("Something went wrong!");
       }
-    } catch (error) {
+    } catch {
       toast.error("❌ Something went wrong!");
     }
   };

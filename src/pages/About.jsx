@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import Navbar from "../utils/Navbar"
 import AboutCards from '../components/AboutCards';
 import AboutDets  from '../utils/About';
 import Footer from "../components/Footer"
 const About = () => {
-    const [eachCard, setEachCard] = useState(AboutDets);
+    const [eachCard] = useState(AboutDets);
   return (
       <div className="w-full min-h-screen bg-white text-white">
         <Navbar

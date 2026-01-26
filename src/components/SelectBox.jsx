@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import { receiveMessage, sendMessage } from "../config/Socket";

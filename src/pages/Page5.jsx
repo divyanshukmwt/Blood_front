@@ -43,10 +43,8 @@ const Page5 = () => {
   useEffect(() => {
     const totalSteps = steps.length;
     const bar = barRef.current;
-    const container = containerRef.current;
 
     stepRefs.current.forEach((step, idx) => {
-      const stepTop = step.offsetTop - container.offsetTop;
 
       ScrollTrigger.create({
         trigger: step,

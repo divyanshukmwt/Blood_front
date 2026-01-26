@@ -16,7 +16,7 @@ const PdfDownloader = (id) => {
       a.click();
       URL.revokeObjectURL(url);
       toast.success("📫 Downloaded successfully!")
-    } catch(err){
+    } catch{
       toast.error("❌ Something went wrong!")
     }
     };

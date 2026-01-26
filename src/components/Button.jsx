@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react";
 
 const Button = ({ navigating, text, val }) => {
