@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { UserContext } from "../context/user.context"
-import Axios from "../config/Axois"
+import { UserContext } from "../context/user.context";
+import Axios from "../config/Axois";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Droplets, RotateCcw } from "lucide-react";
 
 const Otp = () => {
   const { user } = useContext(UserContext);
@@ -10,7 +11,7 @@ const Otp = () => {
   const [timer, setTimer] = useState(60);
   const inputsRef = useRef([]);
   const intervalRef = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
@@ -19,22 +20,16 @@ const Otp = () => {
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(intervalRef.current);
   }, []);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
-
     if (!/^\d*$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
-    if (value && index < 3) {
-      inputsRef.current[index + 1]?.focus();
-    }
+    if (value && index < 3) inputsRef.current[index + 1]?.focus();
   };
 
   const handleKeyDown = (e, index) => {
@@ -54,7 +49,6 @@ const Otp = () => {
         return prev - 1;
       });
     }, 1000);
-    console.log("Re-send");
     await Axios.post("/users/resendOtp", { email: user.email });
   };
 
@@ -63,35 +57,45 @@ const Otp = () => {
   const otpSubmiter = async (e) => {
     e.preventDefault();
     try {
-      if (otpValue.length == 4) {
+      if (otpValue.length === 4) {
         const res = await Axios.post("/users/otp-verify", { email: user.email, otpValue });
         localStorage.setItem("userToken", res.data.token);
-        navigate("/users/profile")
-        toast.success("🎉 Login successfully.")
+        navigate("/users/profile");
+        toast.success("Login successful!");
+      } else {
+        toast.error("OTP must be 4 digits.");
       }
-      else toast.error("❌ OTP Must be 4 Digit.")
     } catch {
-      toast.error("❌ Something went wrong!")
+      toast.error("Something went wrong.");
     }
-  }
+  };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 text-gray-900 flex justify-center items-center">
-      <div className="border border-gray-200 bg-white w-[90%] lg:w-[30%] rounded-lg px-8 py-10 flex flex-col gap-y-8 items-center shadow-lg">
+    <div style={{ minHeight: "100vh", background: "var(--ash)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+      <div style={{ width: "100%", maxWidth: "420px", background: "white", borderRadius: "24px", padding: "48px 40px", boxShadow: "var(--card-shadow)", display: "flex", flexDirection: "column", alignItems: "center", gap: "28px" }}>
 
-        {/* Header */}
-        <h1 className="text-4xl mb-2 font-Poppins uppercase border-b-2 border-r-2 shadow-lg px-4 pb-2 text-red-600">
-          OTP Center
-        </h1>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--crimson)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Droplets size={14} color="white" strokeWidth={2} />
+          </div>
+          <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.2rem" }}>
+            Red<span style={{ color: "var(--crimson)" }}>Hope</span>
+          </span>
+        </div>
 
-        {/* Instruction */}
-        <p className="text-red-500 font-Roboto text-lg text-center">
-          Please check your mail inbox section or spam section.
-        </p>
+        <div style={{ textAlign: "center" }}>
+          <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.6rem", letterSpacing: "-0.02em", marginBottom: "8px" }}>
+            Verify your email
+          </h1>
+          <p style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.6 }}>
+            We sent a 4-digit code to your inbox. Check your spam folder if you don't see it.
+          </p>
+        </div>
 
-        {/* OTP Form */}
-        <form className="flex flex-col gap-y-4 items-center lg:px-5">
-          <div className="flex gap-x-5">
+        {/* OTP inputs */}
+        <form onSubmit={otpSubmiter} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "24px", width: "100%" }}>
+          <div style={{ display: "flex", gap: "12px" }}>
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -100,37 +104,54 @@ const Otp = () => {
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 ref={(el) => (inputsRef.current[index] = el)}
-                className="bg-gray-100 text-2xl font-Roboto block rounded-2xl w-15 px-4 py-6 text-center outline-none transition-all duration-200 border border-gray-300 focus:border-red-500"
                 type="text"
+                style={{
+                  width: 56, height: 64,
+                  borderRadius: "12px",
+                  border: `2px solid ${digit ? "var(--crimson)" : "var(--border)"}`,
+                  background: digit ? "var(--crimson-pale)" : "var(--ash)",
+                  fontSize: "1.5rem", fontWeight: 700,
+                  textAlign: "center", outline: "none",
+                  fontFamily: "Syne, sans-serif",
+                  transition: "all 0.15s",
+                  color: "var(--ink)",
+                }}
+                onFocus={e => e.target.style.borderColor = "var(--crimson)"}
+                onBlur={e => e.target.style.borderColor = digit ? "var(--crimson)" : "var(--border)"}
               />
             ))}
           </div>
-          <input type="hidden" value={otpValue} />
-          <button
-            type="submit"
-            onClick={otpSubmiter}
-            className="bg-red-600 hover:bg-red-700 font-Poppins text-2xl py-4 px-24 mt-6 rounded-lg cursor-pointer transition-all duration-200"
-          >
-            Confirm
+
+          <button type="submit" style={{
+            width: "100%", padding: "14px", borderRadius: "10px",
+            background: "var(--crimson)", color: "white", border: "none", cursor: "pointer",
+            fontFamily: "DM Sans, sans-serif", fontWeight: 700, fontSize: "0.95rem",
+            transition: "all 0.2s",
+            boxShadow: "0 2px 12px rgba(192,21,42,0.3)",
+          }}>
+            Verify OTP
           </button>
         </form>
 
         {/* Timer / Resend */}
         {timer > 0 ? (
-          <p className="text-gray-700">
-            Resend OTP in <span className="text-red-600 font-semibold">{timer}s</span>
+          <p style={{ fontSize: "0.875rem", color: "var(--muted)" }}>
+            Resend code in <span style={{ color: "var(--crimson)", fontWeight: 700 }}>{timer}s</span>
           </p>
         ) : (
-          <button
-            onClick={handleResend}
-            className="bg-orange-500 hover:bg-orange-600 font-Poppins text-2xl py-4 px-20 rounded-lg cursor-pointer transition-all duration-200"
-          >
-            Re-Send OTP
+          <button onClick={handleResend} style={{
+            display: "flex", alignItems: "center", gap: "8px",
+            padding: "10px 20px", borderRadius: "10px",
+            background: "var(--ash)", border: "1px solid var(--border)",
+            color: "var(--ink)", cursor: "pointer",
+            fontFamily: "DM Sans, sans-serif", fontWeight: 600, fontSize: "0.875rem",
+            transition: "all 0.2s",
+          }}>
+            <RotateCcw size={14} /> Resend Code
           </button>
         )}
       </div>
     </div>
-
   );
 };
 

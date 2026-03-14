@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AdminAxios from '../config/AdminAxios';
 import { toast } from 'react-toastify';
+import { Droplets, Heart, ShieldOff, ShieldCheck } from 'lucide-react';
 
 const UserCard = ({ user }) => {
   const [blocked, setBlocked] = useState(user.block);
@@ -9,62 +10,47 @@ const UserCard = ({ user }) => {
   const toggleBlock = async () => {
     setLoading(true);
     try {
-      await AdminAxios.post('/admin/blockUser', { email: user.email, block: !blocked });
+      await AdminAxios.post(blocked?'/admin/unblockUser':'/admin/blockUser',{userId:user._id});
       setBlocked(!blocked);
-      toast.success(blocked ? 'User unblocked' : 'User blocked');
-    } catch { toast.error('Action failed'); }
+      toast.success(`User ${blocked?'unblocked':'blocked'} successfully`);
+    } catch { toast.error("Action failed"); }
     finally { setLoading(false); }
   };
 
   return (
-    <div style={{
-      background: 'white', borderRadius: '16px',
-      border: `1px solid ${blocked ? '#FFCDD2' : 'var(--border)'}`,
-      padding: '20px',
-      transition: 'all 0.3s',
-    }}
-      onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-      onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; }}
+    <div style={{ background:'white',borderRadius:'16px',padding:'20px',border:`1px solid ${blocked?'rgba(192,21,42,0.2)':'var(--border)'}`,transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'14px' }}
+      onMouseEnter={e=>{e.currentTarget.style.boxShadow='var(--card-shadow-hover)';e.currentTarget.style.transform='translateY(-2px)';}}
+      onMouseLeave={e=>{e.currentTarget.style.boxShadow='none';e.currentTarget.style.transform='none';}}
     >
-      <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', marginBottom: '16px' }}>
-        <div style={{ width: 48, height: 48, borderRadius: '50%', overflow: 'hidden', background: 'var(--ash)', flexShrink: 0 }}>
-          {user.profilepic && user.pictype ? (
-            <img src={`data:${user.pictype};base64,${user.profilepic}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <div style={{ width: '100%', height: '100%', background: 'var(--crimson)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: 'white', fontFamily: 'Syne', fontWeight: 800 }}>{user.name?.[0]?.toUpperCase()}</span>
-            </div>
-          )}
+      <div style={{ display:'flex',alignItems:'center',gap:'12px' }}>
+        <div style={{ width:48,height:48,borderRadius:'50%',overflow:'hidden',border:'2px solid var(--border)',background:'var(--ash)',flexShrink:0 }}>
+          {user?.profilepic
+            ? <img src={`data:${user.pictype};base64,${user.profilepic}`} alt={user.name} style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+            : <div style={{ width:'100%',height:'100%',background:'var(--crimson)',display:'flex',alignItems:'center',justifyContent:'center' }}><span style={{ fontFamily:'Syne',fontWeight:800,color:'white',fontSize:'1.1rem' }}>{user.name?.[0]||'?'}</span></div>
+          }
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h4 style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: '0.95rem', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</h4>
-          <p style={{ color: 'var(--muted)', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</p>
+        <div style={{ flex:1,minWidth:0 }}>
+          <p style={{ fontFamily:'Syne, sans-serif',fontWeight:700,fontSize:'0.95rem',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis' }}>{user.name}</p>
+          <p style={{ fontSize:'0.75rem',color:'var(--muted)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis' }}>{user.email}</p>
         </div>
-        <span style={{
-          padding: '4px 8px', borderRadius: '100px', fontSize: '0.72rem', fontWeight: 700,
-          background: `${user.bloodgroup ? 'var(--crimson-pale)' : 'var(--ash)'}`,
-          color: user.bloodgroup ? 'var(--crimson)' : 'var(--muted)',
-          flexShrink: 0,
-        }}>{user.bloodgroup || '—'}</span>
+        <span style={{ padding:'3px 10px',borderRadius:'100px',background:'var(--crimson-pale)',border:'1px solid rgba(192,21,42,0.2)',color:'var(--crimson)',fontWeight:700,fontSize:'0.75rem',flexShrink:0 }}>{user.bloodgroup}</span>
       </div>
 
-      <div style={{ display: 'flex', gap: '8px', fontSize: '0.78rem', color: 'var(--muted)', marginBottom: '16px', flexWrap: 'wrap' }}>
-        <span>🩸 {user.Donate?.length || 0} donations</span>
-        <span>•</span>
-        <span>📋 {user.bloodRequest?.length || 0} requests</span>
-        {user.verified && <><span>•</span><span style={{ color: '#1D9BF0' }}>✅ Verified</span></>}
+      <div style={{ display:'flex',gap:'8px' }}>
+        <div style={{ flex:1,background:'var(--ash)',borderRadius:'8px',padding:'10px',textAlign:'center' }}>
+          <div style={{ display:'flex',justifyContent:'center',marginBottom:'3px',color:'var(--crimson)' }}><Droplets size={13}/></div>
+          <p style={{ fontFamily:'Syne',fontWeight:800,fontSize:'1.1rem' }}>{user?.Donate?.length??0}</p>
+          <p style={{ fontSize:'0.65rem',color:'var(--muted)',letterSpacing:'0.06em',textTransform:'uppercase' }}>Donations</p>
+        </div>
+        <div style={{ flex:1,background:'var(--ash)',borderRadius:'8px',padding:'10px',textAlign:'center' }}>
+          <div style={{ display:'flex',justifyContent:'center',marginBottom:'3px',color:'var(--crimson)' }}><Heart size={13}/></div>
+          <p style={{ fontFamily:'Syne',fontWeight:800,fontSize:'1.1rem' }}>{user?.bloodRequest?.length??0}</p>
+          <p style={{ fontSize:'0.65rem',color:'var(--muted)',letterSpacing:'0.06em',textTransform:'uppercase' }}>Requests</p>
+        </div>
       </div>
 
-      <button onClick={toggleBlock} disabled={loading} style={{
-        width: '100%', padding: '9px', borderRadius: '8px',
-        border: `1px solid ${blocked ? '#FFCDD2' : 'var(--border)'}`,
-        background: blocked ? '#FFF0F0' : 'var(--ash)',
-        color: blocked ? 'var(--crimson)' : 'var(--muted)',
-        cursor: loading ? 'not-allowed' : 'pointer',
-        fontFamily: 'DM Sans', fontWeight: 600, fontSize: '0.82rem',
-        transition: 'all 0.2s',
-      }}>
-        {loading ? '…' : blocked ? '🔓 Unblock User' : '🔒 Block User'}
+      <button onClick={toggleBlock} disabled={loading} style={{ padding:'10px',borderRadius:'10px',background:blocked?'white':'#FFF0F2',border:`1.5px solid ${blocked?'var(--border)':'rgba(192,21,42,0.3)'}`,color:blocked?'var(--success)':'var(--crimson)',cursor:loading?'not-allowed':'pointer',fontFamily:'DM Sans, sans-serif',fontWeight:700,fontSize:'0.82rem',transition:'all 0.2s',display:'flex',alignItems:'center',justifyContent:'center',gap:'6px' }}>
+        {loading ? '…' : blocked ? <><ShieldCheck size={13}/> Unblock User</> : <><ShieldOff size={13}/> Block User</>}
       </button>
     </div>
   );
