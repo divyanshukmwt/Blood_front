@@ -1,27 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { TbMenu } from "react-icons/tb";
-import { CgCloseR } from "react-icons/cg";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = ({ field, animateRef }) => {
-  const [sidenav, setSidenav] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  const ref = useRef();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!ref.current) return;
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    if (sidenav) {
-      ref.current.classList.add("left-0");
-      ref.current.classList.remove("left-[100%]");
-    } else {
-      ref.current.classList.remove("left-0");
-      ref.current.classList.add("left-[100%]");
-    }
-  }, [sidenav]);
+  useEffect(() => { setOpen(false); }, [location.pathname]);
 
   const handleNavigate = async (link) => {
-    setSidenav(false);
+    setOpen(false);
     if (animateRef?.current?.reverseAnimation) {
       await animateRef.current.reverseAnimation();
     }
@@ -29,9 +24,8 @@ const Navbar = ({ field, animateRef }) => {
   };
 
   const handleLogOut = async (link) => {
-    if (animateRef?.current?.reverseAnimation) {
-      await animateRef.current.reverseAnimation();
-    }
+    setOpen(false);
+    if (animateRef?.current?.reverseAnimation) await animateRef.current.reverseAnimation();
     if (link === "/adminLogout") {
       localStorage.removeItem("adminToken");
       navigate("/admin/login");
@@ -41,59 +35,161 @@ const Navbar = ({ field, animateRef }) => {
     }
   };
 
+  const isLogout = (name) => name === "Logout";
+
   return (
-    <div className="w-full pr-5 lg:pr-20 py-4 flex justify-end fixed top-0 z-40">
-      {/* Desktop Menu (unchanged) */}
-      <div className="hidden lg:flex gap-10 text-xl font-[oswald] font-medium cursor-pointer text-black">
-        {field.map((item, index) =>
-          item.name !== "Logout" ? (
-            <button key={index} onClick={() => handleNavigate(item.link)}>
-              {item.name}
-            </button>
+    <>
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        transition: 'all 0.3s ease',
+        background: scrolled ? 'rgba(253,252,251,0.95)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
+      }}>
+        <div style={{
+          maxWidth: '1200px', margin: '0 auto',
+          padding: '0 24px',
+          height: '68px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          {/* Logo */}
+          <button onClick={() => handleNavigate('/')} style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: 'var(--crimson)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              animation: 'pulse-ring 2.5s ease infinite',
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2C8.5 7 4 11 4 15a8 8 0 0016 0c0-4-4.5-8-8-13z"/>
+              </svg>
+            </div>
+            <span style={{
+              fontFamily: 'Syne, sans-serif',
+              fontWeight: 800, fontSize: '1.2rem',
+              color: 'var(--ink)', letterSpacing: '-0.02em',
+            }}>
+              Red<span style={{ color: 'var(--crimson)' }}>Hope</span>
+            </span>
+          </button>
+
+          {/* Desktop links */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className="desktop-nav">
+            {field.map((item, i) =>
+              isLogout(item.name) ? (
+                <button key={i} onClick={() => handleLogOut(item.link)} style={{
+                  padding: '8px 18px', borderRadius: '8px',
+                  background: 'var(--crimson)', color: 'white',
+                  border: 'none', cursor: 'pointer',
+                  fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '0.875rem',
+                  transition: 'all 0.2s',
+                }}
+                  onMouseEnter={e => e.target.style.background = 'var(--crimson-dark)'}
+                  onMouseLeave={e => e.target.style.background = 'var(--crimson)'}
+                >
+                  Sign out
+                </button>
+              ) : (
+                <button key={i} onClick={() => handleNavigate(item.link)} style={{
+                  padding: '8px 14px', borderRadius: '8px',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontFamily: 'DM Sans, sans-serif', fontWeight: 500, fontSize: '0.875rem',
+                  color: location.pathname === item.link ? 'var(--crimson)' : 'var(--ink-light)',
+                  transition: 'color 0.2s',
+                  position: 'relative',
+                }}
+                  onMouseEnter={e => e.target.style.color = 'var(--crimson)'}
+                  onMouseLeave={e => e.target.style.color = location.pathname === item.link ? 'var(--crimson)' : 'var(--ink-light)'}
+                >
+                  {item.name}
+                </button>
+              )
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button onClick={() => setOpen(true)} style={{
+            display: 'none', background: 'none', border: 'none', cursor: 'pointer',
+            padding: '8px', borderRadius: '8px',
+          }} className="mobile-menu-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile overlay */}
+      {open && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 100,
+          background: 'rgba(15,13,12,0.5)', backdropFilter: 'blur(4px)',
+          animation: 'fade-in 0.2s ease',
+        }} onClick={() => setOpen(false)} />
+      )}
+
+      {/* Mobile drawer */}
+      <div style={{
+        position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 101,
+        width: '280px', background: 'var(--white)',
+        transform: open ? 'translateX(0)' : 'translateX(100%)',
+        transition: 'transform 0.35s cubic-bezier(0.22,1,0.36,1)',
+        padding: '24px',
+        display: 'flex', flexDirection: 'column', gap: '8px',
+        boxShadow: '-16px 0 40px rgba(15,13,12,0.12)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.1rem' }}>
+            Red<span style={{ color: 'var(--crimson)' }}>Hope</span>
+          </span>
+          <button onClick={() => setOpen(false)} style={{
+            background: 'var(--ash)', border: 'none', cursor: 'pointer',
+            width: 36, height: 36, borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        {field.map((item, i) =>
+          isLogout(item.name) ? (
+            <button key={i} onClick={() => handleLogOut(item.link)} style={{
+              width: '100%', padding: '14px 16px', borderRadius: '10px',
+              background: 'var(--crimson)', color: 'white',
+              border: 'none', cursor: 'pointer', textAlign: 'left',
+              fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '1rem',
+              marginTop: '8px',
+            }}>Sign out</button>
           ) : (
-            <button key={index} onClick={() => handleLogOut(item.link)}>
-              Logout
-            </button>
+            <button key={i} onClick={() => handleNavigate(item.link)} style={{
+              width: '100%', padding: '14px 16px', borderRadius: '10px',
+              background: location.pathname === item.link ? 'var(--crimson-pale)' : 'transparent',
+              color: location.pathname === item.link ? 'var(--crimson)' : 'var(--ink)',
+              border: 'none', cursor: 'pointer', textAlign: 'left',
+              fontFamily: 'DM Sans, sans-serif', fontWeight: 500, fontSize: '1rem',
+            }}>{item.name}</button>
           )
         )}
       </div>
 
-      {/* Mobile Menu Toggle */}
-      <div className="block lg:hidden text-4xl text-gray-900 cursor-pointer">
-        <TbMenu onClick={() => setSidenav(true)} />
-      </div>
-
-      {/* Mobile Sidebar Menu (light theme) */}
-      <div
-        ref={ref}
-        className="fixed flex flex-col items-center justify-center gap-y-15 text-4xl uppercase transition-all duration-300 ease-in-out bg-gray-50 text-gray-900 top-0 left-[100%] w-full h-screen z-50 lg:hidden shadow-lg"
-      >
-        <CgCloseR
-          onClick={() => setSidenav(false)}
-          className="absolute top-5 right-5 text-5xl text-gray-900"
-        />
-        {field.map((item, index) =>
-          item.name !== "Logout" ? (
-            <button
-              key={index}
-              onClick={() => handleNavigate(item.link)}
-              className="my-4"
-            >
-              {item.name}
-            </button>
-          ) : (
-            <button
-              key={index}
-              onClick={() => handleLogOut(item.link)}
-              className="my-4 text-red-600"
-            >
-              Logout
-            </button>
-          )
-        )}
-      </div>
-    </div>
-
+      <style>{`
+        @media (min-width: 768px) {
+          .desktop-nav { display: flex !important; }
+          .mobile-menu-btn { display: none !important; }
+        }
+        @media (max-width: 767px) {
+          .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: flex !important; }
+        }
+      `}</style>
+    </>
   );
 };
 

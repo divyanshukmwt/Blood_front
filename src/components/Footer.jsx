@@ -1,6 +1,5 @@
-import React from 'react'
-// eslint-disable-next-line no-unused-vars
-import { motion } from "motion/react"
+import { motion } from "motion/react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const links = {
@@ -18,76 +17,106 @@ const Footer = () => {
       { name: "Cookie Policy", href: "src/assets/pdfs/Cookie Policy.pdf", download: true },
       { name: "Privacy Policy", href: "src/assets/pdfs/Privacy Policy.pdf", download: true },
     ],
-  }
-
-  const renderLinks = (items) => {
-    return items.map((link, i) => (
-      <a
-        key={i}
-        className="text-lg w-fit overflow-y-hidden h-[3rem]"
-        href={link.href}
-        {...(link.target && { target: link.target })}
-        {...(link.download && { download: link.name })}
-      >
-        <motion.div
-          className="w-full h-fit overflow-y-auto px-4 py-1 cursor-pointer text-gray-700"
-          initial={{ y: "0%" }}
-          whileHover={{ y: "-50%" }}
-          transition={{ duration: 0.3, ease: "circOut" }}
-        >
-          <p className="mt-1 mb-1">{link.name}</p>
-          <p className="mt-3">{link.name}</p>
-        </motion.div>
-      </a>
-    ))
-  }
+  };
 
   return (
-    <div className="flex flex-col font-[oswald] gap-y-4 bg-white py-4">
-      {/* Brand & Motto */}
-      <h1 className="text-gray-700 font-bold pt-2 text-4xl text-center">
-        Red Hope
-      </h1>
-      <p className="text-gray-600 lg:text-center py-2 px-10 w-full font-[oswald] text-xl">
-        Together, we can save lives and build a healthier India. Every drop of blood is a gift of hope — one donation can save three lives. Be the reason someone survives, smiles, and lives another day.
-      </p>
+    <footer style={{
+      background: 'var(--ink)',
+      color: 'var(--white)',
+      padding: '64px 0 32px',
+    }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+        {/* Top */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '48px',
+          paddingBottom: '48px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+        }}>
+          {/* Brand */}
+          <div style={{ gridColumn: 'span 1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%',
+                background: 'var(--crimson)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 2C8.5 7 4 11 4 15a8 8 0 0016 0c0-4-4.5-8-8-13z"/>
+                </svg>
+              </div>
+              <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.2rem' }}>
+                Red<span style={{ color: 'var(--crimson-light)' }}>Hope</span>
+              </span>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem', lineHeight: 1.7, maxWidth: 240 }}>
+              Every drop saves a life. Together we build a healthier India, one donation at a time.
+            </p>
+          </div>
 
-      <div className="w-[90%] h-[1px] bg-gray-300 mx-auto"></div>
+          {/* Services */}
+          <div>
+            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '20px' }}>Services</p>
+            {links.service.map((l, i) => (
+              <a key={i} href={l.href} style={{
+                display: 'block', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem',
+                textDecoration: 'none', marginBottom: '12px',
+                transition: 'color 0.2s',
+              }}
+                onMouseEnter={e => e.target.style.color = 'white'}
+                onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+              >{l.name}</a>
+            ))}
+          </div>
 
-      {/* Footer Sections */}
-      <div className="w-full py-7 px-10 gap-y-10 flex flex-col lg:flex-row lg:justify-between lg:items-start">
-        {/* Service */}
-        <div className="flex flex-col items-center justify-center gap-y-5">
-          <h1 className="font-[oswald] text-3xl lg:text-4xl text-gray-800">Service</h1>
-          {renderLinks(links.service)}
+          {/* Help */}
+          <div>
+            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '20px' }}>Help</p>
+            {links.helps.map((l, i) => (
+              <a key={i} href={l.href} style={{
+                display: 'block', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem',
+                textDecoration: 'none', marginBottom: '12px',
+                transition: 'color 0.2s',
+              }}
+                onMouseEnter={e => e.target.style.color = 'white'}
+                onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+              >{l.name}</a>
+            ))}
+          </div>
+
+          {/* Legal */}
+          <div>
+            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '20px' }}>Legal</p>
+            {links.legal.map((l, i) => (
+              <a key={i} href={l.href} download={l.download ? l.name : undefined} style={{
+                display: 'block', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem',
+                textDecoration: 'none', marginBottom: '12px',
+                transition: 'color 0.2s',
+              }}
+                onMouseEnter={e => e.target.style.color = 'white'}
+                onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+              >{l.name}</a>
+            ))}
+          </div>
         </div>
 
-        <div className="w-full h-[1px] lg:h-40 lg:w-[1px] bg-gray-300 mx-auto"></div>
-
-        {/* Helps */}
-        <div className="flex flex-col items-center justify-center gap-y-5">
-          <h1 className="font-[oswald] text-3xl lg:text-4xl text-gray-800">Helps</h1>
-          {renderLinks(links.helps)}
-        </div>
-
-        <div className="w-full h-[1px] lg:h-40 lg:w-[1px] bg-gray-300 mx-auto"></div>
-
-        {/* Legal */}
-        <div className="flex flex-col items-center justify-center gap-y-5">
-          <h1 className="font-[oswald] text-3xl lg:text-4xl text-gray-800">Legal</h1>
-          {renderLinks(links.legal)}
+        {/* Bottom */}
+        <div style={{
+          paddingTop: '24px',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          flexWrap: 'wrap', gap: '12px',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.8rem' }}>
+            © 2024 RedHope. All rights reserved.
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.8rem' }}>
+            Made with ❤️ for India
+          </p>
         </div>
       </div>
-
-      <div className="w-[90%] h-[1px] bg-gray-300 mx-auto"></div>
-
-      <p className="bg-white text-gray-600 text-center py-2 font-[oswald] text-lg">
-        &copy; Reserved by Red Hope
-      </p>
-    </div>
-
+    </footer>
   );
-}
+};
 
 export default Footer;
-

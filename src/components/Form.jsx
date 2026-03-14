@@ -6,212 +6,79 @@ import { toast } from "react-toastify";
 
 const Form = ({ fn }) => {
   const { setUser } = useContext(UserContext);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
-    try{
+    try {
       const res = await Axios.post("/users/alldets", data);
-    setUser(res.data);
-    fn(false);
-    toast.success("👏🏽 Update successfully!");
-  } catch {
-    toast.error("❌ Something went wrong!");
-  }
+      setUser(res.data);
+      fn(false);
+      toast.success("Profile updated!");
+    } catch {
+      toast.error("Something went wrong!");
+    }
   };
 
+  const inputStyle = (hasErr) => ({
+    width: '100%', padding: '12px 16px', borderRadius: '10px',
+    border: `1.5px solid ${hasErr ? 'var(--crimson)' : 'var(--border)'}`,
+    background: 'var(--ash)', fontSize: '0.95rem', outline: 'none',
+    fontFamily: 'DM Sans, sans-serif', transition: 'border-color 0.2s',
+  });
+
   return (
-    <div className="fixed bg-transparent backdrop-blur-3xl h-screen w-full z-[999]">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="absolute flex flex-col gap-y-5 items-center w-[90%] lg:w-[50%] text-white -translate-x-1/2 -translate-y-1/2 bg-zinc-700/70 top-1/2 left-1/2 px-5 py-10 rounded-lg">
-        <div className="flex flex-col lg:flex-row lg:gap-x-5 gap-y-3 w-[95%]">
-          <div className="flex flex-col gap-y-3 w-full">
-            <input
-              {...register("number", {
-                required: "Phone number is required",
-                minLength: {
-                  value: 10,
-                  message: "Number must be exactly 10 digits",
-                },
-                maxLength: {
-                  value: 10,
-                  message: "Number must be exactly 10 digits",
-                },
-              })}
-              type="number"
-              placeholder="Enter Your Number"
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none"
-            />
-            {errors.number && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.number.message}
-              </p>
-            )}
-            <input
-              type="number"
-              {...register("emargencyNumber", {
-                required: "Emergency number is required",
-                minLength: {
-                  value: 10,
-                  message: "Number must be exactly 10 digits",
-                },
-                maxLength: {
-                  value: 10,
-                  message: "Number must be exactly 10 digits",
-                },
-              })}
-              placeholder="Enter Emergency Contact"
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none"
-            />
-            {errors.emargencyNumber && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.emargencyNumber.message}
-              </p>
-            )}
-            <input
-              type="date"
-              {...register("dob", {
-                required: "Please Enter The DOB",
-                validate: (value) => {
-                  const selectedDate = new Date(value);
-                  const minDate = new Date("1960-01-01");
-                  const today = new Date();
-                  if (selectedDate < minDate) {
-                    return "DOB must be from 1960 or later";
-                  }
-                  if (selectedDate > today) {
-                    return "DOB cannot be in the future";
-                  }
-                  return true;
-                },
-              })}
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none"
-            />
-            {errors.dob && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.dob.message}
-              </p>
-            )}
-            <input
-              type="number"
-              {...register("weight", {
-                required: "Weight is required",
-                min: {
-                  value: 30,
-                  message: "Weight must be at least 30kg",
-                },
-                max: {
-                  value: 200,
-                  message: "Weight must be realistic (under 200kg)",
-                },
-              })}
-              placeholder="Enter Your Weight (kg)"
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none"
-            />
-            {errors.weight && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.weight.message}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-y-3 w-full">
-            <input
-              type="number"
-              {...register("height", {
-                required: "Height is required",
-                min: {
-                  value: 90,
-                  message: "Height must be at least 90 cm",
-                },
-                max: {
-                  value: 250,
-                  message: "Height must be realistic (under 250 cm)",
-                },
-              })}
-              placeholder="Enter Your Height (cm)"
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none"
-            />
-            {errors.height && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.height.message}
-              </p>
-            )}
-            <input
-              type="text"
-              {...register("address", {
-                required: "Address is required",
-                minLength: {
-                  value: 5,
-                  message: "Address must be at least 5 characters",
-                },
-                maxLength: {
-                  value: 30,
-                  message: "Address must not exceed 30 characters",
-                },
-                pattern: {
-                  value: /^(?!\d+$)[a-zA-Z0-9\s]+$/,
-                  message: "Not Valid Address.",
-                },
-              })}
-              placeholder="Enter Your Address"
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none"
-            />
-            {errors.address && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.address.message}
-              </p>
-            )}
-            <select
-              {...register("gender", {
-                required: "Please select the Gender",
-                validate: (value) =>
-                  value !== "default" || "Please select a valid Gender",
-              })}
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none">
-              <option value="default">Select The Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Transgender">Transgender</option>
-            </select>
-            {errors.gender && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.gender.message}
-              </p>
-            )}
-            <select
-              {...register("bloodGroup", {
-                required: "Please select a blood group",
-                validate: (value) =>
-                  value !== "default" || "Please select a valid blood group",
-              })}
-              className="bg-zinc-800 w-full text-white text-xl font-Roboto py-2 px-4 rounded-lg border-2 border-zinc-700/70 focus:border-sky-400 transition-all duration-200 outline-none">
-              <option value="default">Select Blood Group</option>
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-            </select>
-            {errors.bloodGroup && (
-              <p className="text-[#FF3B30] text-xl font-Roboto">
-                {errors.bloodGroup.message}
-              </p>
-            )}
-          </div>
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 999,
+      background: 'rgba(15,13,12,0.7)', backdropFilter: 'blur(8px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '24px',
+    }}>
+      <div style={{
+        background: 'white', borderRadius: '24px', padding: '40px',
+        width: '100%', maxWidth: '540px',
+        animation: 'fade-up 0.35s cubic-bezier(0.22,1,0.36,1) both',
+        boxShadow: '0 24px 80px rgba(15,13,12,0.3)',
+      }}>
+        <div style={{ marginBottom: '28px' }}>
+          <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.02em', marginBottom: '6px' }}>Complete your profile</h2>
+          <p style={{ color: 'var(--muted)', fontSize: '0.875rem' }}>We need a few more details before you can get started.</p>
         </div>
-        <input
-          type="submit"
-          value="Confirm"
-          className="bg-sky-500 w-full py-2 rounded-lg font-Poppins text-xl"
-        />
-      </form>
+
+        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="form-grid">
+            <div>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '8px' }}>Phone Number</label>
+              <input {...register("number", { required: true, minLength: 10, maxLength: 10 })} type="number" placeholder="10-digit number" style={inputStyle(errors.number)}
+                onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+                onBlur={e => e.target.style.borderColor = errors.number ? 'var(--crimson)' : 'var(--border)'}
+              />
+              {errors.number && <p style={{ color: 'var(--crimson)', fontSize: '0.75rem', marginTop: '4px' }}>Valid 10-digit number required</p>}
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '8px' }}>Emergency Number</label>
+              <input {...register("emargencyNumber", { required: true, minLength: 10, maxLength: 10 })} type="number" placeholder="Emergency contact" style={inputStyle(errors.emargencyNumber)}
+                onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+                onBlur={e => e.target.style.borderColor = errors.emargencyNumber ? 'var(--crimson)' : 'var(--border)'}
+              />
+              {errors.emargencyNumber && <p style={{ color: 'var(--crimson)', fontSize: '0.75rem', marginTop: '4px' }}>Required</p>}
+            </div>
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '8px' }}>Address / City</label>
+            <input {...register("address", { required: true, minLength: 5 })} type="text" placeholder="Your city or address" style={inputStyle(errors.address)}
+              onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+              onBlur={e => e.target.style.borderColor = errors.address ? 'var(--crimson)' : 'var(--border)'}
+            />
+            {errors.address && <p style={{ color: 'var(--crimson)', fontSize: '0.75rem', marginTop: '4px' }}>Address is required</p>}
+          </div>
+          <button type="submit" style={{
+            padding: '14px', borderRadius: '10px',
+            background: 'var(--crimson)', color: 'white', border: 'none', cursor: 'pointer',
+            fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.95rem', marginTop: '8px',
+          }}>Save Profile →</button>
+        </form>
+      </div>
+      <style>{`@media(max-width:480px){.form-grid{grid-template-columns:1fr!important;}}`}</style>
     </div>
   );
 };

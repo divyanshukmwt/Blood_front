@@ -1,71 +1,67 @@
-@import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
-@import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --crimson: #C0152A;
+  --crimson-dark: #8B0E1E;
+  --crimson-light: #E8192F;
+  --crimson-pale: #FFF0F2;
+  --ash: #F5F4F2;
+  --ink: #0F0D0C;
+  --ink-light: #2C2926;
+  --muted: #7A736E;
+  --border: #E8E4E0;
+  --white: #FDFCFB;
+  --success: #0D7A4E;
+  --warning: #B85C00;
+  --card-shadow: 0 1px 3px rgba(15,13,12,0.06), 0 4px 16px rgba(15,13,12,0.06);
+  --card-shadow-hover: 0 4px 8px rgba(15,13,12,0.08), 0 16px 40px rgba(15,13,12,0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
 
 body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  line-height: 1.6;
   overflow-x: hidden;
 }
 
-@media (max-width: 768px) {
-  body {
-    overflow-x: hidden;
-  }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192,21,42,0.4); }
+  70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(192,21,42,0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(192,21,42,0); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-@font-face {
-    font-family: "inter";
-    src: url(assets/Inter-VariableFont_opsz,wght.ttf);
-}
-@font-face {
-    font-family: "OpenSans";
-    src: url(assets/OpenSans-VariableFont_wdth,wght.ttf);
-}
-@font-face {
-    font-family: "Poppins";
-    src: url(assets/Poppins-Regular.ttf);
-}
-@font-face {
-    font-family: "Roboto";
-    src: url(assets/Roboto-VariableFont_wdth,wght.ttf);
-}
-@font-face {
-    font-family: "oswald";
-    src: url(assets/Oswald-Light.ttf);
-}
-
-@theme{
-    --font-inter: "inter";
-    --font-OpenSans: "OpenSans";
-    --font-Poppins: "Poppins";
-    --font-Roboto: "Roboto";
-}
-
-@keyframes rotate-clock-wise {
-    0%{
-        rotate: 0deg;
-    }
-    100%{
-        rotate: 360deg;
-    }
-}
-
-body::-webkit-scrollbar{
-    width: 6px;
-    background-color:#000000;
-}
-
-body::-webkit-scrollbar-thumb{
-    background-color: #ffffff;
-}
-body{
-    background: #ffffff;
-}
-#scroller::-webkit-scrollbar{
-    width: 6px;
-    background-color:#000000;
-}
-
-#scroller::-webkit-scrollbar-thumb{
-    background-color: rgb(255, 255, 255);
-    border-radius: 5px;
-}
+::selection { background: var(--crimson); color: white; }
+:focus-visible { outline: 2px solid var(--crimson); outline-offset: 2px; }

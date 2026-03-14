@@ -1,164 +1,170 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Navbar from '../utils/Navbar'
+import React, { useContext, useEffect, useState } from 'react';
+import Navbar from '../utils/Navbar';
 import { PiGooglePhotosLogoFill } from "react-icons/pi";
-import AdminProfilePic from "../components/AdminProfilePic"
+import AdminProfilePic from "../components/AdminProfilePic";
 import Scales from '../components/Scales';
-import Button from '../components/Button';
 import { AdminContext } from '../context/admin.context';
-import AdminAxios from "../config/AdminAxios"
+import AdminAxios from "../config/AdminAxios";
 import { receiveMessage, sendMessage } from '../config/Socket';
 import SelectBox from '../components/SelectBox';
 import { Link } from "react-router-dom";
+
+const timecalculator = (t) => {
+  if (t == 60) return "60s";
+  if (t == 120) return "2 min";
+  if (t == 300) return "5 min";
+  if (t == 600) return "10 min";
+  if (t == 1800) return "30 min";
+  if (t == 3600) return "1 hr";
+  return "—";
+};
+
+const MetricCard = ({ label, value, sub, icon, accent }) => (
+  <div style={{
+    background: 'white', borderRadius: '16px', padding: '24px',
+    border: '1px solid var(--border)', display: 'flex', gap: '16px', alignItems: 'flex-start',
+  }}>
+    <div style={{ width: 44, height: 44, borderRadius: '12px', background: accent + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>{icon}</div>
+    <div>
+      <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', color: 'var(--ink)', lineHeight: 1 }}>{value ?? '—'}</div>
+      <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--muted)', marginTop: '4px' }}>{label}</div>
+      {sub && <div style={{ fontSize: '0.75rem', color: accent, marginTop: '2px' }}>{sub}</div>}
+    </div>
+  </div>
+);
 
 const Admin = () => {
   const [picModal, setPicModal] = useState(false);
   const { admin, setAdmin } = useContext(AdminContext);
   const [adminDets, setAdminDets] = useState(admin);
-  const [counts, setCounts] = useState({})
-  const [time, setTime] = useState("")
+  const [counts, setCounts] = useState({});
+  const [time, setTime] = useState("");
+
+  useEffect(() => { setAdminDets(admin); }, [admin]);
 
   useEffect(() => {
-    setAdminDets(admin)
-  }, [admin])
-
-  useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const res = await AdminAxios.post("/admin/allcounts");
-        setCounts(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchCounts();
+    AdminAxios.post("/admin/allcounts").then(res => setCounts(res.data)).catch(console.log);
   }, []);
 
-  const serverHandel = () => {
-    sendMessage("server-req", adminDets.email);
-  }
   useEffect(() => {
-    receiveMessage("server-res", (data) => {
-      setAdmin(data);
-      setAdminDets(data);
-    });
-
+    receiveMessage("server-res", (data) => { setAdmin(data); setAdminDets(data); });
   }, []);
-  useEffect(() => {
-    const timecalculator = () => {
-      if (admin.delayTimer == 60) return "60s";
-      else if (admin.delayTimer == 120) return "2min"
-      else if (admin.delayTimer == 300) return "5min"
-      else if (admin.delayTimer == 600) return "10min"
-      else if (admin.delayTimer == 1800) return "30min"
-      else if (admin.delayTimer == 3600) return "1hr"
-    }
-    setTime(timecalculator());
-  }, [admin.delayTimer])
+
+  useEffect(() => { setTime(timecalculator(admin.delayTimer)); }, [admin.delayTimer]);
+
   return (
-    <div className="w-full min-h-screen bg-gray-50 text-gray-900">
-      <Navbar
-        field={[
-          { link: "/", name: "Home" },
-          { link: "/donate/request-list", name: "Donate" },
-          { link: "/reciver/blood", name: "Blood" },
-          { link: "/about", name: "About" },
-          { link: "/adminLogout", name: "Logout" },
-        ]}
-      />
+    <div style={{ background: 'var(--ash)', minHeight: '100vh' }}>
+      <Navbar field={[
+        { link: "/", name: "Home" },
+        { link: "/donate/request-list", name: "Donate" },
+        { link: "/reciver/blood", name: "Blood" },
+        { link: "/about", name: "About" },
+        { link: "/adminLogout", name: "Logout" },
+      ]} />
 
-      <div className="pt-20 px-6 lg:px-10 pb-5 flex flex-col gap-y-5">
-        <div className="flex flex-col gap-y-5 items-center w-full">
-          {picModal && (
-            <AdminProfilePic fn={setPicModal} email={adminDets.email} />
-          )}
-          <div className="w-60 h-60 relative rounded-full">
-            <img
-              className="w-60 h-60 rounded-full object-cover border-2 border-gray-300"
-              src={`data:${adminDets.pictype};base64,${adminDets.profilepic}`}
-              alt=""
-            />
-            <PiGooglePhotosLogoFill
-              onClick={() => setPicModal(!picModal)}
-              className="absolute z-20 text-gray-50 bg-gray-700 text-7xl bottom-0 right-0 rounded-full p-2 cursor-pointer hover:bg-gray-600 transition-colors duration-300"
-            />
+      {picModal && <AdminProfilePic fn={setPicModal} email={adminDets.email} />}
+
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '96px 24px 48px' }}>
+        {/* Header card */}
+        <div style={{
+          background: 'var(--ink)', borderRadius: '24px', padding: '40px',
+          marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '24px',
+          flexWrap: 'wrap', position: 'relative', overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', top: 0, right: 0, width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(192,21,42,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative' }}>
+            <div style={{ width: 80, height: 80, borderRadius: '50%', overflow: 'hidden', border: '3px solid rgba(255,255,255,0.2)' }}>
+              <img src={`data:${adminDets.pictype};base64,${adminDets.profilepic}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <button onClick={() => setPicModal(true)} style={{
+              position: 'absolute', bottom: -4, right: -4, width: 28, height: 28, borderRadius: '50%',
+              background: 'var(--crimson)', border: '2px solid var(--ink)', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
           </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>ADMIN DASHBOARD</div>
+            <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', color: 'white', letterSpacing: '-0.02em' }}>{admin.name}</h1>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem' }}>{admin.email}</p>
+          </div>
+          <button
+            onClick={() => sendMessage("server-req", adminDets.email)}
+            style={{
+              padding: '12px 20px', borderRadius: '10px',
+              background: adminDets.serverOnOff ? 'rgba(13,122,78,0.2)' : 'rgba(192,21,42,0.2)',
+              border: `1px solid ${adminDets.serverOnOff ? 'rgba(13,122,78,0.4)' : 'rgba(192,21,42,0.4)'}`,
+              color: adminDets.serverOnOff ? '#4adeab' : '#f87171',
+              cursor: 'pointer', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.875rem',
+              display: 'flex', alignItems: 'center', gap: '8px',
+              transition: 'all 0.2s',
+            }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: adminDets.serverOnOff ? '#4adeab' : '#f87171', display: 'inline-block' }} />
+            Server: {adminDets.serverOnOff ? 'ONLINE' : 'OFFLINE'}
+          </button>
         </div>
 
-        <div className="flex flex-col items-center">
-          <h1 className="font-Roboto text-3xl">{admin.name}</h1>
-          <h1 className="font-Poppins text-lg text-gray-500 opacity-80">
-            {admin.email}
-          </h1>
+        {/* Metrics */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+          <MetricCard label="Total Users" value={counts.UserCount} icon="👥" accent="#4A3FD4" />
+          <MetricCard label="Blood Requests" value={counts.requestCount} icon="🩸" accent="var(--crimson)" />
+          <MetricCard label="Support Tickets" value={counts.ticketCounst} icon="🎫" accent="#B85C00" />
+          <MetricCard label="Delay Timer" value={time} icon="⏱️" accent="#0D7A4E" sub="Active cooldown" />
         </div>
 
-        <button
-          onClick={() => serverHandel()}
-          className="bg-gray-200 cursor-pointer w-fit text-gray-900 px-6 py-3 rounded-md font-Roboto font-semibold text-2xl hover:bg-gray-300 transition-all duration-300"
-        >
-          Server Switch:{" "}
-          {adminDets.serverOnOff === true ? (
-            <span className="text-green-500">ON</span>
-          ) : (
-            <span className="text-red-500">OFF</span>
-          )}
-        </button>
-
-        <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-4">
-          <div className="border-2 border-gray-300 w-full py-5 rounded-md px-4 flex flex-col gap-y-6 bg-white shadow-md">
-            {counts && (
-              <Scales
-                text={"User Count"}
-                count={counts.UserCount}
-                para={counts.UserCount > 1 ? "Users" : "User"}
-                center={false}
-              />
-            )}
-            {counts && (
-              <Scales
-                text={"Request Count"}
-                count={counts.requestCount}
-                para={counts.requestCount > 1 ? "Times" : "Time"}
-                center={false}
-              />
-            )}
-            {counts && (
-              <Scales
-                text={"Ticket Raises"}
-                count={counts.ticketCounst}
-                para={counts.ticketCounst > 1 ? "Times" : "Time"}
-                center={false}
-              />
-            )}
-            <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-4">
-              <Link
-                to="/allUsers"
-                className="bg-red-600 hover:bg-red-700 text-white font-Poppins py-2 px-4 rounded-lg transition-all duration-200 text-center"
+        {/* Action row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '16px' }} className="admin-bottom-grid">
+          {/* Quick actions */}
+          <div style={{ background: 'white', borderRadius: '20px', padding: '28px', border: '1px solid var(--border)' }}>
+            <h2 style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: '1.1rem', marginBottom: '20px' }}>Quick Actions</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Link to="/allUsers" style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '14px 16px', borderRadius: '12px',
+                background: 'var(--ash)', textDecoration: 'none',
+                color: 'var(--ink)', fontWeight: 600, fontSize: '0.9rem',
+                transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--crimson-pale)'; e.currentTarget.style.color = 'var(--crimson)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--ash)'; e.currentTarget.style.color = 'var(--ink)'; }}
               >
-                See All Users
+                <span>👥</span> See All Users
+                <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
               </Link>
-              <Link
-                to="/ticket-raiser"
-                className="bg-red-600 hover:bg-red-700 text-white font-Poppins py-2 px-4 rounded-lg transition-all duration-200 text-center"
+              <Link to="/ticket-raiser" style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '14px 16px', borderRadius: '12px',
+                background: 'var(--ash)', textDecoration: 'none',
+                color: 'var(--ink)', fontWeight: 600, fontSize: '0.9rem',
+                transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--crimson-pale)'; e.currentTarget.style.color = 'var(--crimson)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--ash)'; e.currentTarget.style.color = 'var(--ink)'; }}
               >
-                Ticket Raise
+                <span>🎫</span> Ticket Raiser
+                <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
               </Link>
             </div>
           </div>
 
-          <div className="w-full py-10 px-4 pb-80 lg:pb-0 border-2 rounded-md flex flex-col gap-y-10 relative bg-white shadow-md">
-            <h1 className="font-Poppins text-2xl">
-              Set Delay Timer of the Request.
-            </h1>
-            <p className="absolute bottom-7 right-3 lg:left-52 sm:left-46 sm:text-lg font-[oswald] text-gray-500">
-              DelayTimer Set in {time}
+          {/* Delay Timer */}
+          <div style={{ background: 'white', borderRadius: '20px', padding: '28px', border: '1px solid var(--border)' }}>
+            <h2 style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: '1.1rem', marginBottom: '4px' }}>Request Delay Timer</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '20px' }}>
+              Currently set to <span style={{ color: 'var(--crimson)', fontWeight: 700 }}>{time}</span>
             </p>
             <SelectBox option={["60s", "2min", "5min", "10min", "30min", "1hr"]} />
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 767px) { .admin-bottom-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </div>
-
   );
-}
+};
 
-export default Admin
+export default Admin;

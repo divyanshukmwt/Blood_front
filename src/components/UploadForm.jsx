@@ -1,7 +1,6 @@
 import { useContext, useRef, useState } from "react";
 import Axios from "../config/Axois";
 import { UserContext } from "../context/user.context";
-import { CgClose } from "react-icons/cg";
 import Cropper from "react-cropper";
 import "react-cropper/node_modules/cropperjs/dist/cropper.css";
 import { toast } from "react-toastify";
@@ -10,6 +9,7 @@ const UploadForm = ({ email, fn }) => {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const cropperRef = useRef(null);
   const { setUser } = useContext(UserContext);
 
@@ -27,9 +27,7 @@ const UploadForm = ({ email, fn }) => {
     const cropper = cropperRef.current?.cropper;
     if (cropper) {
       const canvas = cropper.getCroppedCanvas();
-      if (canvas) {
-        setPreviewUrl(canvas.toDataURL("image/png"));
-      }
+      if (canvas) setPreviewUrl(canvas.toDataURL("image/png"));
     }
   };
 
@@ -37,90 +35,96 @@ const UploadForm = ({ email, fn }) => {
     e.preventDefault();
     const cropper = cropperRef.current?.cropper;
     if (!file || !cropper) return;
-
+    setUploading(true);
     cropper.getCroppedCanvas().toBlob(async (blob) => {
       const formData = new FormData();
       formData.append("profilepic", blob, file.name);
       formData.append("email", email);
-
       try {
         const res = await Axios.post("/users/picture-upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });
-
         fn(false);
         setUser(res.data.cleanedUser);
-        toast.success("📸 Added successfully.");
+        toast.success("Profile photo updated!");
       } catch {
-        toast.error("❌ Sommething went wrong!");
-      }
+        toast.error("Upload failed. Try again.");
+      } finally { setUploading(false); }
     });
   };
 
   return (
-    <div className="picModal w-full h-screen backdrop-blur-2xl bg-black/30 z-50 px-4 fixed top-0 left-0 flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col relative w-[90%] lg:w-[40%] rounded-xl bg-white shadow-[0px_8px_40px_rgba(0,0,0,0.25)] px-6 py-10 gap-y-6 transition-all duration-300"
-      >
-        {/* Close Button */}
-        <CgClose
-          onClick={() => fn(false)}
-          className="absolute top-4 right-4 text-3xl text-gray-700 cursor-pointer hover:rotate-90 transition-transform duration-300"
-        />
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 1000,
+      background: 'rgba(15,13,12,0.7)', backdropFilter: 'blur(8px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '24px',
+    }} onClick={e => { if (e.target === e.currentTarget) fn(false); }}>
+      <div style={{
+        background: 'white', borderRadius: '24px', padding: '40px',
+        width: '100%', maxWidth: '500px',
+        animation: 'fade-up 0.3s cubic-bezier(0.22,1,0.36,1)',
+        position: 'relative',
+      }}>
+        <button onClick={() => fn(false)} style={{
+          position: 'absolute', top: '20px', right: '20px',
+          width: 32, height: 32, borderRadius: '50%',
+          background: 'var(--ash)', border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>✕</button>
 
-        {/* File Input */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="bg-gray-100 px-4 py-3 rounded-lg text-lg text-gray-800 w-full cursor-pointer 
-                 file:cursor-pointer file:border-none file:px-3 file:py-2 file:rounded-md 
-                 file:bg-sky-500 file:text-white hover:file:bg-sky-600 transition-all"
-        />
+        <div style={{ fontSize: '2rem', marginBottom: '16px' }}>📸</div>
+        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.02em', marginBottom: '6px' }}>Update Profile Photo</h2>
+        <p style={{ color: 'var(--muted)', fontSize: '0.875rem', marginBottom: '28px' }}>Upload a photo, then crop it to fit your profile.</p>
 
-        {/* Cropper */}
-        {imageUrl && (
-          <div className="w-full mt-4">
-            <Cropper
-              src={imageUrl}
-              style={{ height: 300, width: "100%" }}
-              aspectRatio={1}
-              viewMode={1}
-              autoCropArea={1}
-              background={false}
-              responsive={true}
-              guides={false}
-              ref={cropperRef}
-              cropend={generatePreview}
-            />
-          </div>
-        )}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <label style={{
+            display: 'block', padding: '24px', borderRadius: '12px',
+            border: '2px dashed var(--border)', background: 'var(--ash)',
+            textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--crimson)'; e.currentTarget.style.background = 'var(--crimson-pale)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--ash)'; }}
+          >
+            <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
+            <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '4px' }}>
+              {file ? `✓ ${file.name}` : 'Click to choose a photo'}
+            </p>
+            <p style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>PNG, JPG or WebP</p>
+          </label>
 
-        {/* Preview */}
-        {previewUrl && (
-          <div className="w-32 h-32 border-4 border-sky-500 overflow-hidden rounded-full mt-4 shadow-md mx-auto">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+          {imageUrl && (
+            <div>
+              <Cropper
+                src={imageUrl} ref={cropperRef}
+                style={{ height: 240, width: '100%', borderRadius: '10px' }}
+                aspectRatio={1} guides={false}
+                crop={generatePreview}
+              />
+            </div>
+          )}
 
-        {/* Upload Button */}
-        <button
-          type="submit"
-          className="bg-sky-500 hover:bg-sky-600 text-white font-medium text-lg px-10 py-3 rounded-lg mt-4 transition-all duration-300 hover:scale-105"
-        >
-          Upload
-        </button>
-      </form>
+          {previewUrl && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <img src={previewUrl} alt="Preview" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border)' }} />
+              <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Preview of cropped photo</span>
+            </div>
+          )}
+
+          <button type="submit" disabled={!file || uploading} style={{
+            padding: '13px', borderRadius: '10px',
+            background: !file || uploading ? 'var(--muted)' : 'var(--crimson)',
+            color: 'white', border: 'none',
+            cursor: !file || uploading ? 'not-allowed' : 'pointer',
+            fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.95rem',
+            transition: 'all 0.2s',
+          }}>
+            {uploading ? 'Uploading…' : 'Save Photo'}
+          </button>
+        </form>
+      </div>
     </div>
-
   );
 };
 

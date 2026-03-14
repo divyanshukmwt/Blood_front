@@ -4,23 +4,18 @@ import Axios from "../config/Axois";
 import { UserContext } from "../context/user.context";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { TbEyeCancel } from "react-icons/tb";
-import { TbEyeCheck } from "react-icons/tb";
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
-  const [show, setshow] = useState(true);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    const { email, password } = data;
+    setLoading(true);
     try {
-      const res = await Axios.post("/users/login", { email, password });
+      const res = await Axios.post("/users/login", { email: data.email, password: data.password });
       if (res.status === 200) {
         const payload = res.data.user || res.data;
         setUser(payload);
@@ -29,108 +24,149 @@ const Login = () => {
           localStorage.setItem("token", res.data.token);
         }
         navigate("/");
-        toast.success("🎉 Login successful.");
-      } else {
-        toast.error("Something went wrong!");
+        toast.success("Welcome back!");
       }
     } catch {
-      toast.error("❌ Something went wrong!");
+      toast.error("Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-screen bg-gray-50 flex justify-center items-center text-gray-900">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-[90%] lg:w-[30%] bg-white border border-gray-200 px-6 py-12 rounded-xl shadow-lg">
-
-        <h1 className="text-3xl font-Poppins text-center uppercase text-red-600">
-          Login Now
-        </h1>
-
-        <div>
-          <input
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email address",
-              },
-            })}
-            className="font-Roboto mt-2 outline-none focus:border-red-500 transition-all duration-200 border border-gray-300 bg-gray-100 p-3 rounded-lg w-full placeholder:text-gray-400"
-            placeholder="Enter your email..."
-          />
-          {errors.email && (
-            <p className="text-red-500 font-Roboto mt-1">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div>
-          <div className="relative w-full">
-            <input
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
-              className="font-Roboto mt-2 outline-none focus:border-red-500 transition-all duration-200 border border-gray-300 bg-gray-100 p-3 rounded-lg w-full"
-              placeholder="Enter your password..."
-              type={show ? "password" : "text"}
-              id="password"
-              autoComplete="true"
-            />
-            <button
-              type="button"
-              onClick={() => setshow(!show)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xl">
-              {show ? (
-                <TbEyeCancel className="text-red-500/70" />
-              ) : (
-                <TbEyeCheck className="text-green-500/70" />
-              )}
-            </button>
+    <div style={{
+      minHeight: '100vh', background: 'var(--ash)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '24px',
+    }}>
+      {/* Left panel - hidden on mobile */}
+      <div style={{
+        width: '480px', minHeight: '600px',
+        background: 'var(--ink)',
+        borderRadius: '24px 0 0 24px',
+        padding: '64px 48px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        position: 'relative', overflow: 'hidden',
+      }} className="auth-left">
+        <div style={{
+          position: 'absolute', top: '-40%', right: '-20%',
+          width: '400px', height: '400px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(192,21,42,0.2) 0%, transparent 70%)',
+        }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ fontSize: '3rem', marginBottom: '24px' }}>🩸</div>
+          <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '2.25rem', color: 'white', letterSpacing: '-0.02em', marginBottom: '16px', lineHeight: 1.1 }}>
+            Welcome back, Hero
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '40px' }}>
+            Your next donation could save up to three lives. Sign in to check new requests from people who need you.
+          </p>
+          <div style={{ display: 'flex', gap: '24px' }}>
+            {[{ v: '10K+', l: 'Donors' }, { v: '98%', l: 'Match rate' }].map((s, i) => (
+              <div key={i}>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', color: 'white' }}>{s.v}</div>
+                <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{s.l}</div>
+              </div>
+            ))}
           </div>
-          {errors.password && (
-            <p className="text-red-500 font-Roboto mt-1">{errors.password.message}</p>
-          )}
         </div>
+      </div>
 
-        <button
-          type="submit"
-          className="w-full py-3 rounded-lg text-xl bg-red-600 hover:bg-red-700 transition-all duration-200 mt-4 cursor-pointer font-Poppins text-white">
-          Login
-        </button>
-
-        <div>
-          <p className="text-center font-Roboto text-lg mt-2">
-            Don't have an account?
-            <span
-              onClick={() => navigate("/register")}
-              className="text-red-600 cursor-pointer ml-1">
-              Register
+      {/* Right panel - form */}
+      <div style={{
+        width: '440px', minHeight: '600px',
+        background: 'white',
+        borderRadius: '0 24px 24px 0',
+        padding: '64px 48px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      }} className="auth-right">
+        <div style={{ marginBottom: '40px' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '32px' }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--crimson)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.5 7 4 11 4 15a8 8 0 0016 0c0-4-4.5-8-8-13z"/></svg>
+            </div>
+            <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.1rem', color: 'var(--ink)' }}>
+              Red<span style={{ color: 'var(--crimson)' }}>Hope</span>
             </span>
+          </Link>
+          <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.02em', marginBottom: '8px' }}>Sign in</h1>
+          <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: 'var(--crimson)', fontWeight: 600, textDecoration: 'none' }}>Register free</Link>
           </p>
         </div>
 
-        <div className="flex justify-center items-center gap-2 mt-4">
-          <span className="w-[100px] h-[1px] bg-red-500"></span>
-          <p className="text-lg text-gray-400">Or</p>
-          <span className="w-[100px] h-[1px] bg-red-500"></span>
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '8px', letterSpacing: '0.04em' }}>EMAIL</label>
+            <input
+              {...register("email", { required: "Email is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" } })}
+              placeholder="you@example.com"
+              style={{
+                width: '100%', padding: '12px 16px', borderRadius: '10px',
+                border: `1.5px solid ${errors.email ? 'var(--crimson)' : 'var(--border)'}`,
+                background: 'var(--ash)', fontSize: '0.95rem', outline: 'none',
+                transition: 'border-color 0.2s',
+                fontFamily: 'DM Sans, sans-serif',
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+              onBlur={e => e.target.style.borderColor = errors.email ? 'var(--crimson)' : 'var(--border)'}
+            />
+            {errors.email && <p style={{ color: 'var(--crimson)', fontSize: '0.78rem', marginTop: '6px' }}>{errors.email.message}</p>}
+          </div>
 
-        <div className="mt-4">
-          <p className="text-center font-Roboto text-lg flex flex-col gap-y-2 text-gray-600">
-            Don't remember your password?
-            <Link to="/forget-password" className="text-red-600 cursor-pointer">
-              Forget Password
-            </Link>
-          </p>
-        </div>
-      </form>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '8px', letterSpacing: '0.04em' }}>PASSWORD</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                {...register("password", { required: "Password is required", minLength: { value: 8, message: "Min 8 characters" } })}
+                type={show ? "text" : "password"}
+                placeholder="••••••••"
+                style={{
+                  width: '100%', padding: '12px 48px 12px 16px', borderRadius: '10px',
+                  border: `1.5px solid ${errors.password ? 'var(--crimson)' : 'var(--border)'}`,
+                  background: 'var(--ash)', fontSize: '0.95rem', outline: 'none',
+                  fontFamily: 'DM Sans, sans-serif',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+                onBlur={e => e.target.style.borderColor = errors.password ? 'var(--crimson)' : 'var(--border)'}
+              />
+              <button type="button" onClick={() => setShow(!show)} style={{
+                position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
+                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)',
+                fontSize: '1rem', display: 'flex', alignItems: 'center',
+              }}>
+                {show ? '🙈' : '👁️'}
+              </button>
+            </div>
+            {errors.password && <p style={{ color: 'var(--crimson)', fontSize: '0.78rem', marginTop: '6px' }}>{errors.password.message}</p>}
+          </div>
+
+          <div style={{ textAlign: 'right' }}>
+            <Link to="/forget-password" style={{ color: 'var(--muted)', fontSize: '0.82rem', textDecoration: 'none' }}>Forgot password?</Link>
+          </div>
+
+          <button type="submit" disabled={loading} style={{
+            padding: '14px', borderRadius: '10px',
+            background: loading ? 'var(--muted)' : 'var(--crimson)',
+            color: 'white', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+            fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '0.95rem',
+            transition: 'all 0.2s',
+            marginTop: '8px',
+          }}>
+            {loading ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
+      </div>
+
+      <style>{`
+        @media (max-width: 767px) {
+          .auth-left { display: none !important; }
+          .auth-right { border-radius: 20px !important; width: 100% !important; max-width: 440px; padding: 40px 28px !important; }
+        }
+      `}</style>
     </div>
-
   );
 };
 

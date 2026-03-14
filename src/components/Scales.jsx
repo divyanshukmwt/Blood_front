@@ -1,15 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-const Scales = ({text,count, para, center=true}) => {
-  return (
-    <div className={`flex flex-col items-start ${center ? "lg:items-center": "lg:items-start"} gap-y-3 w-fit`}>
-      <h3 className="text-3xl font-[oswald]">{text}</h3>
-      <p className="text-3xl font-[oswald] text-red-600">
-        {count}
-        <span className="font-[oswald] text-3xl text-[#A1A1AA] font-semibold"> {para}</span>
-      </p>
-    </div>
-  );
-}
+const Scales = ({ text, count, para, center, className }) => (
+  <div style={{ textAlign: center === false ? 'left' : 'center' }}>
+    <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '2.5rem', color: 'var(--ink)', lineHeight: 1 }}>{count ?? 0}</div>
+    <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '4px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{text}</div>
+    <div style={{ fontSize: '0.8rem', color: 'var(--crimson)', marginTop: '2px' }}>{para}</div>
+  </div>
+);
 
-export default Scales
+export default Scales;

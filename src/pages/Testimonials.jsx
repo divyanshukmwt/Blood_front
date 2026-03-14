@@ -1,102 +1,73 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import React from 'react';
 
-const testimonials = [
+const TESTIMONIALS = [
   {
-    id: 1,
-    name: "Ananya Sharma",
-    review:
-      "Donating blood through Red Hope was seamless and fulfilling. I feel proud to save lives!",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    quote: "RedHope connected me with a donor in 3 hours. My daughter is alive because of this platform.",
+    name: "Priya Sharma",
+    location: "Mumbai",
+    blood: "O−",
   },
   {
-    id: 2,
+    quote: "I've donated 4 times through RedHope. The process is seamless and the impact is real.",
     name: "Rahul Verma",
-    review:
-      "The platform makes it so easy to find blood donors. I highly recommend it to everyone!",
-    image: "https://randomuser.me/api/portraits/men/35.jpg",
+    location: "Delhi",
+    blood: "A+",
   },
   {
-    id: 3,
-    name: "Priya Singh",
-    review:
-      "A wonderful initiative! Red Hope truly saves lives and spreads hope across communities.",
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
-  },
-  {
-    id: 4,
-    name: "Vikram Mehta",
-    review:
-      "Quick, reliable, and life-saving. Red Hope is changing the way we think about blood donation.",
-    image: "https://randomuser.me/api/portraits/men/50.jpg",
-  },
-  {
-    id: 5,
-    name: "Sonal Kapoor",
-    review:
-      "This platform helped me donate blood safely and efficiently. Highly recommend it!",
-    image: "https://randomuser.me/api/portraits/women/22.jpg",
-  },
-  {
-    id: 6,
-    name: "Amit Singh",
-    review:
-      "Red Hope made it easy to help someone in need. Every donation counts!",
-    image: "https://randomuser.me/api/portraits/men/12.jpg",
+    quote: "As a doctor, I recommend RedHope to all my patients in need. It works when time matters most.",
+    name: "Dr. Anjali Mehta",
+    location: "Bangalore",
+    blood: "B+",
   },
 ];
 
-const Testimonials = () => {
-  return (
-    <div className="bg-gray-50 py-16 px-6 lg:px-32">
-      <h2 className="text-4xl font-[oswald] font-bold text-center text-red-700 mb-12">
-        What People Say About Us
-      </h2>
-      <Swiper
-        modules={[Autoplay, Pagination, Navigation]}
-        spaceBetween={30}
-        slidesPerView={3}        // show 3 at a time on desktop
-        slidesPerGroup={1}       // slide 1 at a time
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
-        pagination={{ clickable: true }}
-        navigation
-        loop={true}
-        breakpoints={{
-          0: {                   // mobile
-            slidesPerView: 1,
-            slidesPerGroup: 1,
-          },
-          768: {                 // tablet
-            slidesPerView: 2,
-            slidesPerGroup: 1,   // move 1 at a time
-          },
-          1024: {                // desktop
-            slidesPerView: 3,
-            slidesPerGroup: 1,   // move 1 at a time
-          },
-        }}
-      >
-
-        {testimonials.map((t) => (
-          <SwiperSlide key={t.id}>
-            <div className="flex flex-col items-center text-center bg-white shadow-lg rounded-xl p-8 gap-y-4">
-              <img
-                src={t.image}
-                alt={t.name}
-                className="w-24 h-24 rounded-full object-cover border-2 border-red-700"
-              />
-              <p className="text-gray-700 text-lg font-[poppins]">"{t.review}"</p>
-              <h3 className="text-red-700 font-[oswald] text-xl mt-2">- {t.name}</h3>
+const Testimonials = ({ embedded }) => (
+  <section style={{ padding: embedded ? '80px 0' : '100px 0', background: embedded ? 'var(--white)' : 'var(--white)' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+        <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--crimson)', marginBottom: '12px' }}>TESTIMONIALS</p>
+        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em' }}>
+          Stories of hope
+        </h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+        {TESTIMONIALS.map((t, i) => (
+          <div key={i} style={{
+            background: i === 1 ? 'var(--ink)' : 'var(--ash)',
+            borderRadius: '20px', padding: '32px',
+            border: '1px solid',
+            borderColor: i === 1 ? 'transparent' : 'var(--border)',
+            transition: 'all 0.3s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+          >
+            <div style={{ fontSize: '2rem', marginBottom: '20px', color: 'var(--crimson)' }}>"</div>
+            <p style={{ fontSize: '0.95rem', lineHeight: 1.75, color: i === 1 ? 'rgba(255,255,255,0.75)' : 'var(--ink-light)', marginBottom: '24px' }}>
+              {t.quote}
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: '0.95rem', color: i === 1 ? 'white' : 'var(--ink)' }}>{t.name}</div>
+                <div style={{ fontSize: '0.78rem', color: i === 1 ? 'rgba(255,255,255,0.4)' : 'var(--muted)' }}>{t.location}</div>
+              </div>
+              <span style={{
+                padding: '5px 10px', borderRadius: '100px',
+                background: i === 1 ? 'rgba(192,21,42,0.2)' : 'var(--crimson-pale)',
+                color: i === 1 ? '#F08090' : 'var(--crimson)',
+                fontFamily: 'Syne', fontWeight: 800, fontSize: '0.9rem',
+              }}>{t.blood}</span>
             </div>
-          </SwiperSlide>
+          </div>
         ))}
-      </Swiper>
+      </div>
     </div>
-  );
-};
+    <style>{`
+      @media (max-width: 767px) {
+        .testimonials-grid { grid-template-columns: 1fr !important; }
+      }
+    `}</style>
+  </section>
+);
 
 export default Testimonials;

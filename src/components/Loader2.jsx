@@ -1,73 +1,62 @@
-    // Loader2.jsx
-    import { useEffect, useRef } from "react";
-    import { gsap } from "gsap";
+import React, { useEffect, useState } from 'react';
 
-    export default function Loader2({ onComplete }) {
-    const circleRef = useRef(null);
-    const textRef = useRef(null);
+const Loader2 = ({ onComplete }) => {
+  const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
 
-    useEffect(() => {
-        const circle = circleRef.current;
-        const radius = circle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress(p => {
+        if (p >= 100) {
+          clearInterval(interval);
+          setTimeout(() => { setDone(true); setTimeout(onComplete, 400); }, 200);
+          return 100;
+        }
+        return p + 2;
+      });
+    }, 20);
+    return () => clearInterval(interval);
+  }, [onComplete]);
 
-        circle.style.strokeDasharray = circumference;
-        circle.style.strokeDashoffset = circumference;
-
-        // Use a GSAP timeline to update circle and text together
-        const tl = gsap.timeline({
-        onComplete: () => {
-            // Wait 800ms before finishing
-            setTimeout(() => {
-            if (onComplete) onComplete();
-            }, 800);
-        },
-        });
-
-        tl.to(circle, {
-        strokeDashoffset: 0,
-        duration: 2,
-        ease: "power2.out",
-                onUpdate: function () {
-                        // progress goes 0 → 1
-                        const progress = this.progress();
-
-                        // Animate text opacity and scale gradually with circle
-                        if (textRef.current) {
-                            textRef.current.style.opacity = progress;
-                            textRef.current.style.transform = `scale(${0.8 + progress * 0.2})`;
-                        }
-                },
-        });
-    }, [onComplete]);
-
-    return (
-        <div className="flex items-center justify-center h-screen bg-white">
-        <div className="relative w-40 h-40">
-            <svg className="w-full h-full">
-            <circle
-                ref={circleRef}
-                cx="80"
-                cy="80"
-                r="70"
-                stroke="red"
-                strokeWidth="7"
-                fill="none"
-                strokeLinecap="round"
-                className="transform -rotate-90 origin-center"
-            />
-            </svg>
-
-            <div className="absolute inset-0 flex items-center justify-center">
-            <span
-                ref={textRef}
-                className="text-red-600 text-2xl font-bold font-[oswald]"
-                style={{ opacity: 0, transform: "scale(0.8)" }}
-            >
-                Red Hope
-            </span>
-            </div>
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      background: 'var(--ink)',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      opacity: done ? 0 : 1,
+      transition: 'opacity 0.4s ease',
+      pointerEvents: done ? 'none' : 'all',
+    }}>
+      <div style={{ position: 'relative', marginBottom: '32px' }}>
+        <div style={{
+          width: 64, height: 64, borderRadius: '50%',
+          background: 'var(--crimson)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: `0 0 0 ${Math.round(progress / 10) * 2}px rgba(192,21,42,${(100 - progress) / 200})`,
+          transition: 'box-shadow 0.1s',
+        }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2C8.5 7 4 11 4 15a8 8 0 0016 0c0-4-4.5-8-8-13z"/>
+          </svg>
         </div>
-        </div>
-    );
-    }
+      </div>
+
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', color: 'white', letterSpacing: '-0.02em' }}>
+          Red<span style={{ color: 'var(--crimson-light)' }}>Hope</span>
+        </h1>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', marginTop: '4px' }}>Loading platform…</p>
+      </div>
+
+      <div style={{ width: '180px', height: '2px', background: 'rgba(255,255,255,0.1)', borderRadius: '1px', overflow: 'hidden' }}>
+        <div style={{
+          height: '100%', borderRadius: '1px',
+          background: 'var(--crimson)',
+          width: `${progress}%`, transition: 'width 0.05s linear',
+        }} />
+      </div>
+    </div>
+  );
+};
+
+export default Loader2;
