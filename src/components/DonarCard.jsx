@@ -1,63 +1,82 @@
 import DonateForm from './DonateForm';
 
+const URGENCY = {
+  high:   { bg: '#FFF0F0', color: '#C0152A', border: '#FFCDD2', label: '🔴 Critical' },
+  Medium: { bg: '#FFF8E6', color: '#B85C00', border: '#FFE0A0', label: '🟡 Moderate' },
+  Low:    { bg: '#F0FFF4', color: '#0D7A4E', border: '#B2F5C8', label: '🟢 Non-urgent' },
+};
+
 const DonarCard = ({ data, btn, fn }) => {
+  const urgency = URGENCY[data.urgency] || { bg: 'var(--ash)', color: 'var(--muted)', border: 'var(--border)', label: 'Unknown' };
+
   return (
     <>
-      <DonateForm
-        modal={btn}
-        dataId={data._id}
-        modalfn={fn}
-        name={data.reciventId.name}
-      />
-      <div className="w-full flex flex-col gap-y-4 border border-gray-300 hover:border-sky-400 hover:shadow-md hover:shadow-sky-200/50 duration-200 rounded-lg p-5 bg-white">
-        <div className="flex flex-col gap-y-2">
-          <div className="w-full h-fit flex justify-between items-start">
-            <div className="w-20 aspect-square overflow-hidden rounded-full border border-gray-200">
-              <img
-                src={`data:${data.reciventId.pictype};base64,${data.reciventId.profilepic}`}
-                alt="Profile Image"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {data.urgency === "high" ? (
-              <p className="bg-rose-100 px-4 font-Poppins font-bold text-sm rounded-full uppercase text-rose-600">
-                High
-              </p>
-            ) : data.urgency === "Medium" ? (
-              <p className="bg-amber-100 px-4 font-Poppins font-bold text-sm rounded-full uppercase text-amber-600">
-                Medium
-              </p>
-            ) : data.urgency === "Low" ? (
-              <p className="bg-green-100 px-4 font-Poppins font-bold text-sm rounded-full uppercase text-green-600">
-                Low
-              </p>
+      <DonateForm modal={btn} dataId={data._id} modalfn={fn} name={data.reciventId.name} />
+      <div style={{
+        background: 'white', borderRadius: '20px',
+        border: '1px solid var(--border)',
+        padding: '24px',
+        transition: 'all 0.3s',
+        display: 'flex', flexDirection: 'column', gap: '16px',
+      }}
+        onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = 'transparent'; }}
+        onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+      >
+        {/* Top row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--border)', background: 'var(--ash)', flexShrink: 0 }}>
+            {data.reciventId.profilepic && data.reciventId.pictype ? (
+              <img src={`data:${data.reciventId.pictype};base64,${data.reciventId.profilepic}`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              "Unknown"
+              <div style={{ width: '100%', height: '100%', background: 'var(--crimson)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: 'white', fontFamily: 'Syne', fontWeight: 800, fontSize: '1.25rem' }}>{data.reciventId.name?.[0]?.toUpperCase()}</span>
+              </div>
             )}
           </div>
+          <span style={{
+            padding: '5px 10px', borderRadius: '100px',
+            background: urgency.bg, color: urgency.color,
+            border: `1px solid ${urgency.border}`,
+            fontSize: '0.75rem', fontWeight: 700,
+          }}>{urgency.label}</span>
         </div>
-        <h1 className="font-Poppins text-xl text-gray-700">
-          Name: <span className="text-gray-800">{data.reciventId.name}</span>
-        </h1>
-        <h4 className="font-Roboto text-xl text-gray-700">
-          Required : <span className="text-red-500">{data.bloodType}</span>
-        </h4>
-        <h4 className="font-Roboto text-xl text-gray-700">
-          Date : <span className="text-gray-500">{data.date}</span>
-        </h4>
-        <h4 className="font-Roboto text-xl text-gray-700">
-          Time : <span className="text-gray-500">{data.time}</span>
-        </h4>
-        <button
-          onClick={() => fn(true)}
-          className="bg-green-600 hover:bg-green-700 rounded-lg uppercase font-bold py-4 font-Poppins cursor-pointer tracking-widest text-xl transition-all duration-200 text-white shadow"
+
+        {/* Name & blood */}
+        <div>
+          <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '1.05rem', marginBottom: '4px' }}>{data.reciventId.name}</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '1.5rem', color: 'var(--crimson)' }}>{data.bloodType}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>blood required</span>
+          </div>
+        </div>
+
+        {/* Date/time */}
+        <div style={{ display: 'flex', gap: '12px', paddingTop: '8px', borderTop: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: 'var(--muted)' }}>
+            <span>📅</span>{data.date}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: 'var(--muted)' }}>
+            <span>⏰</span>{data.time}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <button onClick={() => fn(true)} style={{
+          width: '100%', padding: '12px',
+          borderRadius: '10px', border: 'none',
+          background: 'var(--crimson)', color: 'white',
+          cursor: 'pointer', fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.9rem',
+          transition: 'all 0.2s',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+        }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--crimson-dark)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'var(--crimson)'}
         >
-          Donate
+          🩸 Donate Now
         </button>
       </div>
     </>
-
   );
-}
+};
 
-export default DonarCard
+export default DonarCard;

@@ -1,19 +1,38 @@
-import React from 'react'
+import React from 'react';
 
-const Ticket = ({data}) => {
-  return (
-    <div className="border-2 w-fit px-4 py-3 rounded-md flex flex-col gap-y-2">
-      <div className="flex gap-x-2 text-xl">
-        <h1 className="font-Poppins">Title : </h1>
-        <p className="font-Roboto">{data.ticketTitle}</p>
+const Ticket = ({ data }) => (
+  <div style={{
+    background: 'white', borderRadius: '16px', padding: '24px',
+    border: '1px solid var(--border)',
+    transition: 'all 0.3s',
+    display: 'flex', flexDirection: 'column', gap: '12px',
+  }}
+    onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'transparent'; }}
+    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+  >
+    {/* Header */}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: '10px',
+        background: 'var(--crimson-pale)', border: '1px solid rgba(192,21,42,0.15)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '1rem', flexShrink: 0,
+      }}>🎫</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {data.ticketTitle}
+        </h3>
+        <p style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>{data.date} · {data.time}</p>
       </div>
-      <p className='font-mono text-lg'>Data : <span className='text-sky-400 font-Roboto'>{data.date}</span></p>
-      <p className='font-mono text-lg'>Time : <span className='text-sky-400 font-Roboto'>{data.time}</span></p>
-      <p className="max-w-70 font-Roboto leading-5 text-lg">
+    </div>
+
+    {/* Description */}
+    <div style={{ background: 'var(--ash)', borderRadius: '10px', padding: '14px' }}>
+      <p style={{ color: 'var(--ink-light)', fontSize: '0.875rem', lineHeight: 1.65 }}>
         {data.ticketDescription}
       </p>
     </div>
-  );
-}
+  </div>
+);
 
-export default Ticket
+export default Ticket;

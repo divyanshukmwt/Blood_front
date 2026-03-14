@@ -1,175 +1,76 @@
-import Axios from '../config/Axois';
-import { useRef, useState } from 'react'
-import { toast } from 'react-toastify';
-import { TbEyeCancel } from "react-icons/tb";
-import { TbEyeCheck } from "react-icons/tb";
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import Axios from "../config/Axois";
+import { toast } from "react-toastify";
 
 const ForgetPassword = () => {
-  const navigate = useNavigate();
-  const pass = useRef(null);
-  const [show, setshow] = useState(true);
-  const [email, setEmail] = useState("");
-  const [otp, setotp] = useState("");
-  const [password, setpassword] = useState("");
-  const [modal, setmodal] = useState(false);
-  const [passModal, setpassModal] = useState(false);
-  const [err, seterr] = useState(false);
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passregex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  const emailHandeler = async e => {
-    e.preventDefault();
-    if (emailRegex.test(email)) {
-      setmodal(true);
-      toast.success("OTP send your Email, please cheack inbox or spam.");
-      await Axios.post("/users/forgetPass", { email });
-    } else {
-      toast.error("Input not Valid.");
-      setmodal(false);
-    }
-  }
-  const otpHandeler = (e) => {
-    e.preventDefault();
-    if (otp.length == 4 && emailRegex.test(email)) {
-      // proceed to password input — server will validate OTP when updating password
-      setpassModal(true);
-    } else {
-      toast.error("Input not Valid.");
-      setpassModal(false);
-    }
-  }
-  const passwordHandel = async () => {
-    if (passregex.test(password)) {
-      try {
-        const res = await Axios.post("/users/updatePassword", {
-          email,
-          otp,
-          password,
-        });
-        console.log(res);
-        if (res.status === 200) {
-          seterr(false);
-          toast.success("Password changed successfully.");
-          navigate("/login");
-        }
-      } catch (error) {
-        if (error.response?.status === 409) {
-          seterr(false);
-          toast.info("Do not reuse your previous password. Try a new one.");
-        } else if (error.response?.status === 401) {
-          seterr(true);
-          toast.error("Invalid or expired OTP.");
-        } else {
-          seterr(true);
-          toast.error("Something went wrong. Please try again.");
-        }
-      }
-    } else {
-      seterr(true);
-      toast.error("Password format is invalid.");
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      await Axios.post("/users/forget-password", { email: data.email });
+      setSent(true);
+      toast.success("Reset link sent!");
+    } catch {
+      toast.error("Email not found.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-50 text-gray-900">
-      <div className="relative px-4 pt-6 pb-10 w-[90%] lg:w-[30%] rounded-md flex flex-col gap-y-7 items-center border border-gray-200 bg-white shadow-lg">
+    <div style={{ minHeight: '100vh', background: 'var(--ash)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+      <div style={{ width: '100%', maxWidth: '420px', background: 'white', borderRadius: '24px', padding: '56px 40px', boxShadow: 'var(--card-shadow)' }}>
+        <Link to="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--muted)', textDecoration: 'none', fontSize: '0.85rem', marginBottom: '32px' }}>
+          ← Back to sign in
+        </Link>
 
-        <h1 className="text-xl uppercase font-Poppins text-red-600">Forget Password</h1>
-
-        {/* Email Input */}
-        <div className="w-full relative">
-          <div className="w-full flex h-10 bg-gray-100 rounded-md overflow-hidden border border-gray-300">
-            <input
-              type="email"
-              placeholder="Email..."
-              className="w-full border-none outline-none px-2"
-              value={email}
-              onChange={(e) => setEmail(e.target.value.trim())}
-            />
-            <button
-              onClick={emailHandeler}
-              className="whitespace-nowrap px-2 bg-red-600 text-white hover:bg-red-700 transition-all duration-200 cursor-pointer"
-            >
-              Send OTP
-            </button>
+        {sent ? (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📧</div>
+            <h2 style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '1.5rem', marginBottom: '12px' }}>Check your email</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.7 }}>We've sent a password reset link to your email address. It may take a few minutes to arrive.</p>
           </div>
-          {passModal && (
-            <p className="text-sm text-green-500 text-left w-full pl-2 absolute">
-              Your account is verified.
-            </p>
-          )}
-        </div>
+        ) : (
+          <>
+            <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.02em', marginBottom: '8px' }}>Reset password</h1>
+            <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '32px' }}>Enter your email and we'll send you a reset link.</p>
 
-        {/* OTP Input */}
-        {modal && (
-          <div className="bg-gray-100 h-10 flex w-full rounded-md overflow-hidden border border-gray-300">
-            <input
-              type="number"
-              placeholder="OTP here..."
-              className="w-full border-none outline-none px-2"
-              value={otp}
-              onChange={(e) => setotp(e.target.value.trim())}
-            />
-            <button
-              onClick={otpHandeler}
-              className="whitespace-nowrap px-2 bg-red-600 text-white hover:bg-red-700 transition-all duration-200 cursor-pointer"
-            >
-              Verify OTP
-            </button>
-          </div>
-        )}
-
-        {/* New Password Input */}
-        {passModal && (
-          <div className="relative w-full">
-            <div className="w-full flex h-10 rounded-md bg-gray-100 overflow-hidden border border-gray-300">
-              <div className="relative w-full h-full">
+            <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.04em', marginBottom: '8px' }}>EMAIL</label>
                 <input
-                  type={show ? "password" : "text"}
-                  placeholder="New Password here..."
-                  className="w-full px-2 h-full border-none outline-none"
-                  autoComplete="true"
-                  ref={pass}
-                  value={password}
-                  onChange={(e) => setpassword(e.target.value.trim())}
+                  {...register("email", { required: "Email is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" } })}
+                  type="email" placeholder="you@example.com"
+                  style={{
+                    width: '100%', padding: '12px 16px', borderRadius: '10px',
+                    border: `1.5px solid ${errors.email ? 'var(--crimson)' : 'var(--border)'}`,
+                    background: 'var(--ash)', fontSize: '0.95rem', outline: 'none',
+                    fontFamily: 'DM Sans, sans-serif',
+                  }}
+                  onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+                  onBlur={e => e.target.style.borderColor = errors.email ? 'var(--crimson)' : 'var(--border)'}
                 />
-                <button
-                  onClick={() => setshow(!show)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-xl"
-                >
-                  {show ? (
-                    <TbEyeCancel className="text-red-500/70" />
-                  ) : (
-                    <TbEyeCheck className="text-green-500/70" />
-                  )}
-                </button>
+                {errors.email && <p style={{ color: 'var(--crimson)', fontSize: '0.78rem', marginTop: '5px' }}>{errors.email.message}</p>}
               </div>
-              <button
-                onClick={passwordHandel}
-                className="whitespace-nowrap px-2 bg-red-600 text-white hover:bg-red-700 transition-all duration-200 cursor-pointer"
-              >
-                Confirm
+              <button type="submit" disabled={loading} style={{
+                padding: '14px', borderRadius: '10px',
+                background: loading ? 'var(--muted)' : 'var(--crimson)',
+                color: 'white', border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+                fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.95rem',
+              }}>
+                {loading ? 'Sending…' : 'Send reset link →'}
               </button>
-            </div>
-            {err && (
-              <p className="absolute text-red-500 mt-1">
-                Password must be at least 8 characters and include uppercase, lowercase, number, and special character
-              </p>
-            )}
-          </div>
+            </form>
+          </>
         )}
-
-        {/* Go to Login */}
-        <p className="absolute bottom-1 font-Poppins text-gray-700">
-          Go To Login:{" "}
-          <Link className="text-red-600 hover:text-red-700 transition-all duration-200" to={"/login"}>
-            Login
-          </Link>
-        </p>
       </div>
     </div>
-
   );
-}
+};
 
-export default ForgetPassword
+export default ForgetPassword;

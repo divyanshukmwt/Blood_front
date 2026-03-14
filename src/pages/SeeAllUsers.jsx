@@ -10,75 +10,72 @@ const SeeAllUsers = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        const res = await AdminAxios.post("/admin/seeAllUser");
-        setAllUsers(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchAllUsers();
+    AdminAxios.post("/admin/seeAllUser").then(res => setAllUsers(res.data)).catch(console.log);
   }, []);
 
-  useEffect(() => {
-    setUser(allUsers);
-  }, [allUsers]);
+  useEffect(() => { setUser(allUsers); }, [allUsers]);
 
-  const filteredUsers = allUser.filter(
-    (user) =>
-      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = allUser.filter(u =>
+    u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 text-gray-900 font-Poppins">
-      {/* Navbar */}
-      <Navbar
-        field={[
-          { link: "/admin", name: "Profile" },
-          { link: "/", name: "Home" },
-          { link: "/donate/request-list", name: "Donate" },
-          { link: "/reciver/blood", name: "Blood" },
-          { link: "/about", name: "About" },
-        ]}
-      />
+    <div style={{ background: 'var(--ash)', minHeight: '100vh' }}>
+      <Navbar field={[
+        { link: "/admin", name: "Dashboard" },
+        { link: "/", name: "Home" },
+        { link: "/donate/request-list", name: "Donate" },
+        { link: "/reciver/blood", name: "Blood" },
+        { link: "/about", name: "About" },
+      ]} />
 
-      <div className="pt-40 pb-4 w-full min-h-screen px-5 lg:px-14">
-        {/* Search Input */}
-        <div className="bg-white fixed top-20 left-1/2 lg:left-10 -translate-x-1/2 lg:-translate-x-0 w-[90%] lg:w-[35rem] rounded-xl shadow-lg border border-red-700">
-          <input
-            maxLength={40}
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Type Name or Email..."
-            className="px-4 py-3 lg:py-2 w-full outline-none text-gray-900 font-Poppins placeholder-zinc-400 focus:border-b-2 border-red-700 rounded-xl transition-all duration-200"
-          />
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '96px 24px 48px' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+          <div>
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--crimson)', marginBottom: '8px' }}>USER MANAGEMENT</p>
+            <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', letterSpacing: '-0.02em' }}>
+              All Users
+            </h1>
+            <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '4px' }}>{filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found</p>
+          </div>
+          {/* Search */}
+          <div style={{ position: 'relative', minWidth: '280px' }}>
+            <input
+              maxLength={40}
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Search by name or email…"
+              style={{
+                width: '100%', padding: '11px 16px 11px 40px', borderRadius: '10px',
+                border: '1.5px solid var(--border)',
+                background: 'white', fontSize: '0.875rem', outline: 'none',
+                fontFamily: 'DM Sans, sans-serif',
+                transition: 'border-color 0.2s',
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--crimson)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border)'}
+            />
+            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', fontSize: '1rem' }}>🔍</span>
+          </div>
         </div>
 
-        {/* Users Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6 mt-36 lg:mt-20">
-          {filteredUsers.length > 0 ? (
-            filteredUsers.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col items-center gap-y-3 border border-red-100"
-              >
-                <UserCard data={item} />
-              </div>
-            ))
-          ) : (
-            <p className="text-center w-full text-zinc-500 mt-10 text-lg animate-pulse">
-              Fetching users
-            </p>
-
-          )}
-        </div>
+        {/* Grid */}
+        {filteredUsers.length > 0 ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+            {filteredUsers.map((user, i) => <UserCard key={i} user={user} />)}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '80px 0' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔍</div>
+            <h3 style={{ fontFamily: 'Syne', fontWeight: 700, fontSize: '1.25rem', marginBottom: '8px' }}>No users found</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Try a different search term</p>
+          </div>
+        )}
       </div>
     </div>
-
-
   );
 };
 

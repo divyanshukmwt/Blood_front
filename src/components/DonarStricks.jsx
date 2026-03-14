@@ -1,27 +1,27 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-const DonarStricks = ({ bloodGroup, date, time, id }) => {
-  const navigate = useNavigate();
-  return (
-    <div className="border-2 border-gray-300 bg-white rounded-lg p-5 lg:p-3 flex flex-col gap-y-2 w-full lg:w-[32%]">
-      <h3 className="text-2xl font-Poppins">
-        RQ Type - <span className="text-[#FF6B6B]">{bloodGroup}</span>
-      </h3>
-      <p className="text-2xl font-Poppins">
-        RQ Date - <span className="text-teal-600">{date}</span>
-      </p>
-      <p className="text-2xl font-Poppins">
-        RQ Time - <span className="text-teal-600">{time}</span>
-      </p>
-      <button
-        onClick={() => navigate(`/map/${id}`)}
-        className="w-full py-2 font-Roboto uppercase text-white hover:bg-blue-700 transition-all duration-200 text-xl font-semibold rounded bg-blue-600 cursor-pointer"
-      >
-        Map
-      </button>
-    </div>
+import React from 'react';
 
-  );
-};
+const DonarStricks = ({ bloodGroup, date, time, id }) => (
+  <div style={{
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '14px 16px', borderRadius: '12px',
+    background: 'var(--ash)', border: '1px solid var(--border)',
+    gap: '12px', flexWrap: 'wrap',
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--crimson)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.5 7 4 11 4 15a8 8 0 0016 0c0-4-4.5-8-8-13z"/></svg>
+      </div>
+      <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '1.1rem', color: 'var(--crimson)' }}>{bloodGroup}</span>
+      <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>
+        <span>{date}</span>
+        <span style={{ margin: '0 6px' }}>·</span>
+        <span>{time}</span>
+      </div>
+    </div>
+    <span style={{ padding: '4px 10px', borderRadius: '100px', fontSize: '0.72rem', fontWeight: 700, background: '#F0FFF4', color: '#0D7A4E', border: '1px solid #B2F5C8' }}>
+      ✅ Donated
+    </span>
+  </div>
+);
 
 export default DonarStricks;

@@ -1,61 +1,57 @@
-import React, { useContext, useEffect } from 'react'
-import { receiveMessage, sendMessage } from '../config/Socket';
-import { UserContext } from '../context/user.context';
-import { useNavigate } from 'react-router-dom';
-import PdfDownloader from './PdfDownloader';
+import React from 'react';
+import Axios from '../config/Axois';
 import { toast } from 'react-toastify';
+
 const Stricks = ({ bloodGroup, date, time, status, id }) => {
-  const { setUser } = useContext(UserContext);
-  const navigator = useNavigate()
-  const handelDelete = (id) => {
-    sendMessage("delete-Post", id);
-    toast.success("Delete successfully.")
-  }
-  useEffect(() => {
-    receiveMessage("update-Post", async (data) => {
-      await setUser(data);
-      console.log(data);
-    });
-  }, []);
+  const isPending = status === 'pending';
+
+  const handleDelete = async () => {
+    try {
+      await Axios.delete(`/users/deleteRequest/${id}`);
+      toast.success('Request deleted');
+    } catch { toast.error('Could not delete'); }
+  };
 
   return (
-    <div className="border-2 border-gray-300 bg-white rounded-lg shadow-md p-5 lg:p-4 flex flex-col gap-y-3 w-full lg:w-[32%] transition-all duration-200 hover:shadow-xl">
-      <h3 className="text-2xl font-Poppins text-gray-800">
-        RQ Type - <span className="text-red-500 font-semibold">{bloodGroup}</span>
-      </h3>
-      <p className="text-2xl font-Poppins text-gray-700">
-        RQ Date - <span className="text-teal-600 font-medium">{date}</span>
-      </p>
-      <p className="text-2xl font-Poppins text-gray-700">
-        RQ Time - <span className="text-teal-600 font-medium">{time}</span>
-      </p>
-
-      {status === "pending" ? (
-        <button
-          onClick={() => handelDelete(id)}
-          className="w-full py-2 font-Roboto cursor-pointer uppercase text-xl font-semibold rounded bg-red-500 text-white 
-                 hover:bg-red-600 transition-all duration-200"
-        >
-          Delete
-        </button>
-      ) : (
-        <div className="flex gap-x-3">
-          <button
-            onClick={() => navigator(`/map/${id}`)}
-            className="w-1/2 py-2 font-Roboto uppercase text-xl font-semibold rounded bg-blue-600 text-white 
-                   hover:bg-blue-700 transition-all duration-200"
-          >
-            Map
-          </button>
-          <div className="w-1/2">
-            <PdfDownloader id={id} className="w-full py-2 font-Roboto text-white uppercase text-xl font-semibold rounded bg-green-500  
-                                          hover:bg-green-600 transition-all duration-200"/>
-          </div>
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '14px 16px', borderRadius: '12px',
+      background: 'var(--ash)', border: '1px solid var(--border)',
+      transition: 'all 0.2s', gap: '12px', flexWrap: 'wrap',
+    }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border)'}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <span style={{
+          fontFamily: 'Syne', fontWeight: 800, fontSize: '1.1rem',
+          color: 'var(--crimson)', minWidth: '36px',
+        }}>{bloodGroup}</span>
+        <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>
+          <span>{date}</span>
+          <span style={{ margin: '0 6px' }}>·</span>
+          <span>{time}</span>
         </div>
-      )}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span style={{
+          padding: '4px 10px', borderRadius: '100px', fontSize: '0.72rem', fontWeight: 700,
+          background: isPending ? '#FFF8E6' : '#F0FFF4',
+          color: isPending ? '#B85C00' : '#0D7A4E',
+          border: `1px solid ${isPending ? '#FFE0A0' : '#B2F5C8'}`,
+        }}>{isPending ? '⏳ Pending' : '✅ Accepted'}</span>
+        <button onClick={handleDelete} style={{
+          width: 28, height: 28, borderRadius: '50%', background: 'var(--crimson-pale)',
+          border: '1px solid rgba(192,21,42,0.2)', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem',
+          transition: 'all 0.2s',
+        }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--crimson)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'var(--crimson-pale)'}
+          title="Delete"
+        >×</button>
+      </div>
     </div>
-
   );
-}
+};
 
-export default Stricks
+export default Stricks;

@@ -1,230 +1,184 @@
-import { useContext, useEffect, useState } from 'react'
-import Navbar from '../utils/Navbar'
+import { useContext, useEffect, useState } from 'react';
+import Navbar from '../utils/Navbar';
 import { PiGooglePhotosLogoFill } from "react-icons/pi";
-import Scales from '../components/Scales';
-import AddRequest from '../components/AddRequest';
-import Stricks from '../components/Stricks';
+import { MdVerified } from "react-icons/md";
 import { UserContext } from '../context/user.context';
 import UploadForm from '../components/UploadForm';
-import { receiveMessage } from '../config/Socket';
 import BlockInterface from '../components/BlockInterface';
-import { MdVerified } from "react-icons/md";
+import AddRequest from '../components/AddRequest';
+import Stricks from '../components/Stricks';
 import DonarStricks from '../components/DonarStricks';
-import Form from "../components/Form"
+import Form from "../components/Form";
+import { receiveMessage } from '../config/Socket';
+
+const StatCard = ({ value, label, icon }) => (
+  <div style={{
+    background: 'white', border: '1px solid var(--border)',
+    borderRadius: '16px', padding: '24px',
+    textAlign: 'center', flex: 1, minWidth: '140px',
+  }}>
+    <div style={{ fontSize: '1.75rem', marginBottom: '4px' }}>{icon}</div>
+    <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '2rem', color: 'var(--ink)', lineHeight: 1 }}>{value}</div>
+    <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '6px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</div>
+  </div>
+);
 
 const Profile = () => {
   const { user, setUser } = useContext(UserContext);
   const [userDets, setUserDets] = useState(user);
   const [picModal, setPicModal] = useState(false);
   const [formModal, setFormModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('requests');
 
   useEffect(() => {
-    receiveMessage("allPost", (data) => {
-      setUser(data);
-      setUserDets(data)
-    })
+    receiveMessage("allPost", (data) => { setUser(data); setUserDets(data); });
+    receiveMessage("reciver-update", (data) => { setUser(data); setUserDets(data); });
+    receiveMessage("updateBlock-center", (data) => { setUser(data); setUserDets(data); });
+  }, []);
 
-    receiveMessage("reciver-update", (data) => {
-      setUser(data)
-      setUserDets(data)
-    });
+  useEffect(() => { setUserDets(user); }, [user]);
+  useEffect(() => { if (userDets?.number === null) setFormModal(true); }, [userDets?.number]);
 
-    receiveMessage("updateBlock-center", (data) => {
-      setUser(data)
-      setUserDets(data)
-    });
+  const sortByDateTime = (arr) => [...(arr || [])].filter(i => i?.date && i?.time).sort((a, b) => {
+    const dt = (item) => new Date(`${item.date.split("/").reverse().join("-")} ${item.time}`);
+    return dt(b) - dt(a);
+  });
 
-  }, [])
-
-  useEffect(() => {
-    setUserDets(user)
-  }, [user])
-
-  useEffect(() => {
-    if (userDets?.number === null) {
-      setFormModal(true);
-    }
-  }, [userDets?.number]);
   return (
     <>
       {formModal && <Form fn={setFormModal} />}
-      <div className="bg-gray-100 w-full h-fit text-black">
-        {/* Navbar */}
-        <Navbar
-          field={[
-            { link: "/", name: "Home" },
-            { link: "/donate/request-list", name: "Donate" },
-            { link: "/reciver/blood", name: "Blood" },
-            { link: "/about", name: "About" },
-            { link: "/users/contactUs", name: "Contact Us" },
-            { link: "/login", name: "Logout" },
-          ]}
-        />
+      <div style={{ background: 'var(--ash)', minHeight: '100vh' }}>
+        <Navbar field={[
+          { link: "/", name: "Home" },
+          { link: "/donate/request-list", name: "Donate" },
+          { link: "/reciver/blood", name: "Blood" },
+          { link: "/about", name: "About" },
+          { link: "/users/contactUs", name: "Contact Us" },
+          { link: "/login", name: "Logout" },
+        ]} />
 
-        {/* Profile Section */}
-        <div className="flex flex-col pt-20 gap-y-7 items-center lg:flex-row lg:justify-center lg:gap-x-70">
-          {picModal && <UploadForm fn={setPicModal} email={userDets.email} />}
-          <div className="flex flex-col items-center">
-            <div className="w-62 h-62 rounded-full relative flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1544194215-541c2d3561a4?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-[-75px_10px]">
-              {userDets?.profilepic && userDets?.pictype && (
-                <img
-                  src={`data:${userDets.pictype};base64,${userDets.profilepic}`}
-                  alt="Profile"
-                  className="w-62 h-62 rounded-full object-cover"
-                />
+        {picModal && <UploadForm fn={setPicModal} email={userDets.email} />}
+
+        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '96px 24px 48px' }}>
+          {/* Profile Header Card */}
+          <div style={{
+            background: 'white', borderRadius: '24px', padding: '40px',
+            marginBottom: '24px', boxShadow: 'var(--card-shadow)',
+            display: 'flex', gap: '32px', alignItems: 'flex-start', flexWrap: 'wrap',
+          }}>
+            {/* Avatar */}
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div style={{
+                width: 100, height: 100, borderRadius: '50%',
+                overflow: 'hidden', border: '3px solid var(--border)',
+                background: '#f0f0f0',
+              }}>
+                {userDets?.profilepic && userDets?.pictype ? (
+                  <img
+                    src={`data:${userDets.pictype};base64,${userDets.profilepic}`}
+                    alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', background: 'var(--crimson)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '2rem', color: 'white' }}>
+                      {userDets?.name?.[0]?.toUpperCase() || '?'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <button onClick={() => setPicModal(!picModal)} style={{
+                position: 'absolute', bottom: -4, right: -4,
+                width: 30, height: 30, borderRadius: '50%',
+                background: 'var(--crimson)', border: '2px solid white',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="white" strokeWidth="2" fill="none"/></svg>
+              </button>
+            </div>
+
+            {/* Info */}
+            <div style={{ flex: 1, minWidth: '200px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.5rem', letterSpacing: '-0.02em' }}>
+                  {userDets?.name || 'Loading...'}
+                </h1>
+                {userDets?.verified && <MdVerified style={{ color: '#1D9BF0', fontSize: '1.25rem' }} />}
+              </div>
+              <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '20px' }}>{userDets?.email}</p>
+              
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <span style={{
+                  padding: '6px 14px', borderRadius: '100px',
+                  background: 'var(--crimson-pale)', border: '1px solid rgba(192,21,42,0.2)',
+                  color: 'var(--crimson)', fontWeight: 700, fontSize: '0.9rem',
+                }}>
+                  {userDets?.bloodgroup || '—'}
+                </span>
+                {userDets?.block && (
+                  <span style={{ padding: '6px 14px', borderRadius: '100px', background: '#FFF3CD', border: '1px solid #FFD600', color: '#856404', fontWeight: 600, fontSize: '0.85rem' }}>
+                    ⚠ Account Restricted
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Stats row */}
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', width: '100%', marginTop: '8px' }}>
+              <StatCard value={userDets?.Donate?.length ?? 0} label="Donations" icon="🩸" />
+              <StatCard value={userDets?.bloodRequest?.length ?? 0} label="Requests" icon="📋" />
+              <StatCard value={userDets?.verified ? "Yes" : "No"} label="Verified" icon="✅" />
+            </div>
+          </div>
+
+          {/* Add Request / Block */}
+          <div style={{ marginBottom: '24px' }}>
+            {userDets?.block === true ? <BlockInterface /> : <AddRequest time={userDets?.delayTime} />}
+          </div>
+
+          {/* Tabs */}
+          <div style={{ background: 'white', borderRadius: '24px', boxShadow: 'var(--card-shadow)', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--border)' }}>
+              {[['requests', 'Blood Requests'], ['donations', 'Donations']].map(([tab, label]) => (
+                <button key={tab} onClick={() => setActiveTab(tab)} style={{
+                  flex: 1, padding: '16px 24px',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '0.9rem',
+                  color: activeTab === tab ? 'var(--crimson)' : 'var(--muted)',
+                  borderBottom: activeTab === tab ? '2px solid var(--crimson)' : '2px solid transparent',
+                  transition: 'all 0.2s', marginBottom: '-1px',
+                }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ padding: '24px', maxHeight: '400px', overflowY: 'auto' }}>
+              {activeTab === 'requests' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {sortByDateTime(userDets?.bloodRequest).length > 0
+                    ? sortByDateTime(userDets?.bloodRequest).map((item, i) => (
+                        <Stricks key={i} bloodGroup={item.bloodType} date={item.date} time={item.time} status={item.status} id={item._id} />
+                      ))
+                    : <p style={{ textAlign: 'center', color: 'var(--muted)', padding: '40px 0', fontSize: '0.9rem' }}>No blood requests yet.</p>
+                  }
+                </div>
               )}
-              <PiGooglePhotosLogoFill
-                onClick={() => {
-                  setPicModal(!picModal);
-                }}
-                className="absolute z-20 text-white bg-gray-800 text-7xl bottom-0 right-0 rounded-full p-2 cursor-pointer"
-              />
-            </div>
-            <div className="flex flex-col items-center">
-              <h3 className="text-3xl font-[oswald]">
-                {userDets.name != undefined ? userDets.name : <span>Loading...</span>}
-              </h3>
-              <p className="text-gray-500 font-[oswald] text-xl">{userDets.email}</p>
-            </div>
-          </div>
-
-          {/* Welcome Message */}
-          <div className="border-2 border-gray-300 rounded-lg p-5 flex flex-col gap-y-1 ml-5 mr-5 lg:w-1/3 bg-white">
-            <h3 className="text-3xl font-[oswald]">Hey, Welcome</h3>
-            <span className="text-3xl font-[oswald]">{userDets.name}</span>
-            <p className="font-[oswald] text-2xl pt-5">
-              Welcome to <span className='text-red-600'>Red Hope</span>
-              <br /> Thank you for saving lives. Every action counts. Together, we
-              build a stronger India. You’re a hero. Stay inspired!
-            </p>
-          </div>
-        </div>
-
-        {/* Streaks Info */}
-        <div className="flex flex-col gap-y-5 gap-x-10 items-start mt-10 mb-2 border-2 border-gray-300 rounded-lg p-5 mx-5 bg-white">
-          <h1 className="font-[oswald] text-3xl">Your Streaks Info</h1>
-          <div className="flex flex-col gap-y-5 lg:flex-row lg:justify-between lg:w-full lg:px-4">
-            <Scales
-              text={"Donate"}
-              count={userDets.Donate.length}
-              para={userDets.Donate.length > 1 ? "Times" : "Time"}
-              className="font-[oswald]"
-            />
-            <Scales
-              text={"Blood Requests"}
-              count={userDets.bloodRequest.length}
-              para={userDets.bloodRequest.length > 1 ? "Times" : "Time"}
-              className="font-[oswald]"
-            />
-
-            <div className="flex flex-col items-start gap-y-3">
-              <h3 className="text-3xl font-[oswald]">Verified</h3>
-              {userDets.verified && (
-                <p className="text-3xl font-Poppins flex items-center justify-center gap-x-2 ">
-                  <MdVerified className="text-blue-500" />
-                  <span className="font-[oswald] text-4xl"> Yes</span>
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col items-start lg:items-center gap-y-3">
-              <h3 className="text-3xl font-[oswald]">Blood Group</h3>
-              <p className="text-3xl font-[oswald] flex gap-x-2 font-bold text-red-500">
-                {userDets.bloodgroup}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Add Request / Block */}
-        <div className="px-5 py-2 flex justify-center">
-          {userDets.block === true ? (
-            <BlockInterface />
-          ) : (
-            <AddRequest time={userDets.delayTime} />
-          )}
-        </div>
-
-        {/* All Requests */}
-        <div className="px-5 py-2">
-          <div className="border-2 border-gray-300 rounded-lg p-5 flex flex-col gap-y-5 bg-white">
-            <h1 className="font-[oswald] text-3xl">Your All Request</h1>
-            <div
-              id="scroller"
-              className={`min-h-10 max-h-96 w-full ${userDets.block === true
-                ? "opacity-20 pointer-events-none"
-                : "opacity-100 pointer-events-auto"
-                } p-2 border-2 border-gray-300 rounded-lg overflow-y-auto flex flex-col gap-y-5 lg:gap-y-2 lg:gap-x-2 lg:flex-row lg:flex-wrap`}
-            >
-              {userDets?.bloodRequest.length !== 0 ? (
-                [...(userDets?.bloodRequest || [])]
-                  .filter((item) => item?.date && item?.time)
-                  .sort((a, b) => {
-                    const getDateTime = (item) =>
-                      new Date(
-                        `${item.date.split("/").reverse().join("-")} ${item.time}`
-                      );
-                    return getDateTime(b) - getDateTime(a);
-                  })
-                  .map((item, index) => (
-                    <Stricks
-                      key={index}
-                      bloodGroup={item.bloodType}
-                      date={item.date}
-                      time={item.time}
-                      status={item.status}
-                      id={item._id}
-                    />
-                  ))
-              ) : (
-                <p className="text-center w-full uppercase font-Poppins font-semibold text-gray-500">
-                  No Request Yet.
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* All Donations */}
-        <div className="px-5 py-2">
-          <div className="border-2 border-gray-300 rounded-lg p-5 flex flex-col gap-y-5 bg-white">
-            <h1 className="font-[oswald] text-3xl">Your All Donation</h1>
-            <div
-              id="scroller"
-              className={`min-h-10 max-h-96 w-full ${userDets.block === true
-                ? "opacity-20 pointer-events-none"
-                : "opacity-100 pointer-events-auto"
-                } p-2 border-2 border-gray-300 rounded-lg overflow-y-auto flex flex-col gap-y-5 lg:gap-y-2 lg:gap-x-2 lg:flex-row lg:flex-wrap`}
-            >
-              {userDets?.Donate.length !== 0 ? (
-                [...(userDets?.Donate || [])]
-                  .filter((item) => item?.date && item?.time)
-                  .sort((a, b) => {
-                    const getDateTime = (item) =>
-                      new Date(
-                        `${item.date.split("/").reverse().join("-")} ${item.time}`
-                      );
-                    return getDateTime(b) - getDateTime(a);
-                  })
-                  .map((item, index) => (
-                    <DonarStricks
-                      key={index}
-                      bloodGroup={item.bloodType}
-                      date={item.date}
-                      time={item.time}
-                      id={item._id}
-                    />
-                  ))
-              ) : (
-                <p className="text-center w-full uppercase font-Poppins font-semibold text-gray-500">
-                  No Donation Yet.
-                </p>
+              {activeTab === 'donations' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {sortByDateTime(userDets?.Donate).length > 0
+                    ? sortByDateTime(userDets?.Donate).map((item, i) => (
+                        <DonarStricks key={i} bloodGroup={item.bloodType} date={item.date} time={item.time} id={item._id} />
+                      ))
+                    : <p style={{ textAlign: 'center', color: 'var(--muted)', padding: '40px 0', fontSize: '0.9rem' }}>No donations yet.</p>
+                  }
+                </div>
               )}
             </div>
           </div>
         </div>
       </div>
-      </>
+    </>
   );
-}
+};
 
-export default Profile
+export default Profile;

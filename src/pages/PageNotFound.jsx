@@ -1,96 +1,20 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../utils/Navbar';
-import { animate, stagger } from "motion"
-import { splitText } from "motion-plus"
 
-const PageNotFound = () => {
-    const containerRef = useRef();
-    const paraRef = useRef();
-    useEffect(() => {
-      document.fonts.ready.then(() => {
-        if (!containerRef.current) return;
-
-        const wavyElement = containerRef.current.querySelector(".wavy");
-        if (!wavyElement) return;
-
-        const { chars } = splitText(wavyElement);
-        containerRef.current.style.visibility = "visible";
-
-        const staggerDelay = 0.55;
-
-        animate(
-          chars,
-          { y: [-20, 20] },
-          {
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-            duration: 2,
-            delay: stagger(staggerDelay, {
-              startDelay: -staggerDelay * chars.length,
-            }),
-          }
-        );
-      });
-    }, []);
-    useEffect(() => {
-      document.fonts.ready.then(() => {
-        if (!paraRef.current) return;
-
-        const paraElement = paraRef.current.querySelector(".para");
-        if (!paraElement) return;
-
-        const { chars } = splitText(paraElement);
-        paraRef.current.style.visibility = "visible";
-
-        const staggerDelay = 0.15;
-
-        animate(
-          chars,
-          { y: [-20, 20] },
-          {
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-            duration: 2,
-            delay: stagger(staggerDelay, {
-              startDelay: -staggerDelay * chars.length,
-            }),
-          }
-        );
-      });
-    }, []);
-  return (
-      <div className="text-white cursor-help flex flex-col gap-y-32 lg:gap-y-13 items-center justify-center h-screen">
-        <Navbar
-          field={[
-            { link: "/", name: "Home" },
-            { link: "/donate/request-list", name: "Donate" },
-            { link: "/reciver/blood", name: "Blood" },
-            { link: "/about", name: "About" },
-            { link: "/users/contactUs", name: "Contact Us" },
-          ]}
-        />
-        <div className="flex flex-col gap-y-4 items-center justify-center">
-          <div ref={containerRef}>
-            <h1 className="wavy text-9xl lg:text-[10vw] font-OpenSans text-[#FF0000] drop-shadow-[0px_0px_15px_rgba(255,0,0,0.9)] font-extralight tracking-widest">
-              404
-            </h1>
-          </div>
-          <div ref={paraRef}>
-            <p className="para text-4xl lg:text-5xl uppercase font-Poppins text-[#FF0000] ">
-              Page Not Found
-            </p>
-          </div>
-        </div>
-        <Link
-          to="/"
-          className="bg-zinc-700 text-green-400 px-4 py-2 rounded-md font-Poppins flex items-center justify-center text-2xl lg:text-lg">
-          Go Home Please 😊
-        </Link>
-      </div>
-  );
-}
+const PageNotFound = () => (
+  <div style={{ minHeight: '100vh', background: 'var(--ink)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '40px', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(192,21,42,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 'clamp(6rem, 18vw, 12rem)', color: 'var(--crimson)', lineHeight: 1, letterSpacing: '-0.04em', marginBottom: '0' }}>404</div>
+      <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', color: 'white', letterSpacing: '-0.02em', marginBottom: '16px' }}>Page not found</h1>
+      <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '1rem', marginBottom: '40px', maxWidth: '400px' }}>The page you're looking for doesn't exist or has been moved.</p>
+      <Link to="/" style={{
+        display: 'inline-block', padding: '14px 28px', borderRadius: '10px',
+        background: 'var(--crimson)', color: 'white', textDecoration: 'none',
+        fontFamily: 'DM Sans', fontWeight: 700, fontSize: '0.95rem',
+      }}>← Back to Home</Link>
+    </div>
+  </div>
+);
 
 export default PageNotFound;
