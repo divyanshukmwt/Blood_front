@@ -67,7 +67,7 @@ const About = () => {
               {/* Image */}
               <div style={{ height: '200px', overflow: 'hidden', background: 'var(--ash)' }}>
                 {item.img ? (
-                  <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: '0 25%' }} />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--crimson)' }}>
                     <span style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '4rem', color: 'white' }}>
